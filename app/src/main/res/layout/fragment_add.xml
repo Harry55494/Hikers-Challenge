@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddFragment">
+    tools:context=".AddFragment"
+    android:background="@color/background_green">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="hellooooo" />
+        android:text="@string/add_fragment_title" />
 
 </FrameLayout>

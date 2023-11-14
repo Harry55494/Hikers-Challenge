@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Hiker\'s Challenge</string>
     <string name="hikers_challenge_title">Hiker\'s Challenge</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_fragment_title">Home</string>
+    <string name="add_fragment_title">Add</string>
+    <string name="wallet_fragment_title">Wallet</string>
+    <string name="home_image">Template Image Showing a Hike</string>
 </resources>

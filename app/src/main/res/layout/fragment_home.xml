@@ -1,13 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    tools:context=".HomeFragment"
+    android:background="@color/background_green"
+    android:layout_margin="20dp">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:text="@string/home_fragment_title"
+        android:textStyle="bold"
+        android:textSize="34sp"
+        android:textColor="@color/titles"
+        android:id="@+id/titleTextView"
+        />
 
-</FrameLayout>
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_below="@id/titleTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:contentDescription="@string/home_image"
+        android:background="@drawable/rounded_square"
+        android:src="@drawable/template_home_image"
+        android:scaleType="centerCrop"
+        />
+
+</RelativeLayout>

@@ -3,4 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background_green">#c5e1a5</color>
+    <color name="navbar_green">#8BC34A</color>
+    <color name="titles">#FF000000</color>
 </resources>
