@@ -4,5 +4,9 @@
     <string name="home_fragment_title">Home</string>
     <string name="add_fragment_title">Add</string>
     <string name="wallet_fragment_title">Wallet</string>
-    <string name="home_image">Template Image Showing a Hike</string>
+    <string name="example_home_image_description">Template Image Showing a Hike</string>
+    <string name="example_weather">18ºC ☀️</string>
+    <string name="navigation_home">Home</string>
+    <string name="navigation_scan">Scan</string>
+    <string name="navigation_wallet">Wallet</string>
 </resources>

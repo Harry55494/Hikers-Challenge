@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeFragment"
@@ -17,16 +18,31 @@
         android:id="@+id/titleTextView"
         />
 
-    <ImageView
-        android:layout_width="300dp"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:text="@string/example_weather"
+        android:textSize="22sp"
+        android:textColor="@color/titles"
+        android:id="@+id/weatherTextView"
+        android:textAlignment="textEnd"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="340dp"
         android:layout_height="300dp"
         android:layout_below="@id/titleTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:contentDescription="@string/home_image"
-        android:background="@drawable/rounded_square"
-        android:src="@drawable/template_home_image"
-        android:scaleType="centerCrop"
-        />
+        android:layout_marginTop="40dp"
+        app:cardCornerRadius="16dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/example_home_image_description"
+            android:src="@drawable/template_home_image"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
