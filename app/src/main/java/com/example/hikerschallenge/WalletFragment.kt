@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +22,7 @@ class WalletFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private val badgesViewModel by activityViewModels<BadgesViewModel>()
     private val tag = "WalletFragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +39,18 @@ class WalletFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wallet, container, false)
+        val view = inflater.inflate(R.layout.fragment_wallet, container, false)
+        val table = view.findViewById<ViewGroup>(R.id.badges_table_layout)
+        // iterate over badges and put them in the table
+        for (badge in badgesViewModel.badgesModel!!.badges){
+            val row = layoutInflater.inflate(R.layout.badge_row, table, false)
+            val name = row.findViewById<android.widget.TextView>(R.id.badge_row_name)
+            name.text = badge.name
+            table.addView(row)
+            Log.i(tag, "Badge $badge added to table")
+        }
+        Log.i(tag, "onCreateView() run")
+        return view
     }
 
     companion object {
