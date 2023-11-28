@@ -5,6 +5,6 @@
     <string name="add_fragment_title">Scan</string>
     <string name="wallet_fragment_title">Wallet</string>
     <string name="example_home_image_description">Template Image Showing a Hike</string>
-    <string name="example_weather">18ºC ☀️</string>
+    <string name="example_weather" />
     <string name="badge_icon_content_desc">Badge Icon</string>
 </resources>

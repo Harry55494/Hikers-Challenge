@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:padding="10dp">
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/badge_row_image"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_launcher_background"
+        android:src="@drawable/baseline_brightness_high_96"
         android:contentDescription="@string/badge_icon_content_desc" />
 
     <TextView
@@ -16,7 +16,8 @@
         android:layout_toEndOf="@+id/badge_row_image"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
+        android:gravity="center"
         />
 
 </RelativeLayout>

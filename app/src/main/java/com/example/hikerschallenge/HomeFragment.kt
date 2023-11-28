@@ -1,15 +1,20 @@
 package com.example.hikerschallenge
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
+import com.google.android.gms.location.LocationServices
+import org.chromium.net.CronetEngine
+import java.util.concurrent.Executors
 
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "badge_model"
 
@@ -19,14 +24,14 @@ private const val ARG_PARAM1 = "badge_model"
  * create an instance of this fragment.
  */
 class HomeFragment : Fragment() {
-    private var badge_model: BadgesModel? = null
+    private var badgeModel: BadgesModel? = null
     private val tag = "HomeFragment"
     private val badgesViewModel by activityViewModels<BadgesViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            badge_model = it.getSerializable(ARG_PARAM1) as BadgesModel
+            badgeModel = it.getSerializable(ARG_PARAM1) as BadgesModel
         }
         Log.i(tag, "onCreate() run")
     }
@@ -37,6 +42,53 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        if (badgesViewModel.locationPermissionGranted){
+            if (ActivityCompat.checkSelfPermission(requireActivity(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.i(tag, "Location permission not granted")
+            } else {
+
+                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+                fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location : Location? ->
+                        Log.i(tag, "Location !!!: $location")
+                    }
+
+            }
+
+        }
+
+        val myBuilder = CronetEngine.Builder(requireActivity())
+        val cronetEngine = myBuilder.build()
+        val executor = Executors.newSingleThreadExecutor()
+        val requestCallback = URLRequestCallback(this.badgesViewModel)
+        val requestBuilder = cronetEngine.newUrlRequestBuilder(
+            "https://api.openweathermap.org/data/2.5/weather?lat=51.87703035&lon=0.9500788585686786&appid=732af6bb744b0c60aa2041cd423fbe50&units=metric",
+            requestCallback,
+            executor
+        )
+        val request = requestBuilder.build()
+        request.start()
+
+        // Need to wait for request to finish before updating weather data
+
+        val weatherObserver = androidx.lifecycle.Observer<Array<String>> { weatherData ->
+            val weatherText = view.findViewById<android.widget.TextView>(R.id.weatherTextView)
+            if (!weatherData.contentEquals(arrayOf("", ""))){
+                "${weatherData[0]}°C ${weatherData[1]}".also { weatherText.text = it }
+            } else {
+                "".also { weatherText.text = it }
+            }
+
+            Log.i(tag, "weatherObserver triggered")
+        }
+        badgesViewModel.weatherDataLive.observe(viewLifecycleOwner, weatherObserver)
+
         Log.i(tag, "onCreateView() run")
         return view
     }

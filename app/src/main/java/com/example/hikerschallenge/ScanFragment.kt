@@ -25,6 +25,14 @@ class ScanFragment : Fragment() {
     private val badgesViewModel by activityViewModels<BadgesViewModel>()
     private val tag = "ScanFragment"
 
+    fun badgeScanned(){
+        val randomGenerator = java.util.Random()
+        val randomName = randomGenerator.nextInt(1000).toString()
+        badgesViewModel.badgesModel!!.badges.add(Badge(randomName))
+        badgesViewModel.badgesModel!!.saveBadges(Bundle())
+        Log.i(tag, "badgeScanned() run")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -40,7 +48,20 @@ class ScanFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_scan, container, false)
+        val view = inflater.inflate(R.layout.fragment_scan, container, false)
+
+        val button = view.findViewById<android.widget.Button>(R.id.addBadgeButton)
+        button.setOnClickListener {
+            badgeScanned()
+        }
+
+        // add camera fragment
+        val cameraFragment = CameraFragment()
+        val transaction = childFragmentManager.beginTransaction()
+        transaction.add(R.id.camera_fragment_container, cameraFragment)
+        transaction.commit()
+
+        return view
     }
 
     companion object {
