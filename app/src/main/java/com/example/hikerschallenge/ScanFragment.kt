@@ -25,11 +25,12 @@ class ScanFragment : Fragment() {
     private val badgesViewModel by activityViewModels<BadgesViewModel>()
     private val tag = "ScanFragment"
 
-    fun badgeScanned(){
+    private fun badgeScanned(){
         val randomGenerator = java.util.Random()
         val randomName = randomGenerator.nextInt(1000).toString()
-        badgesViewModel.badgesModel!!.badges.add(Badge(randomName))
-        badgesViewModel.badgesModel!!.saveBadges(Bundle())
+        val randomLocation = randomGenerator.nextInt(1000).toString()
+        badgesViewModel.badgesModel!!.addBadge(Badge(randomName, randomLocation))
+        badgesViewModel.badgesModel!!.saveBadges()
         Log.i(tag, "badgeScanned() run")
     }
 

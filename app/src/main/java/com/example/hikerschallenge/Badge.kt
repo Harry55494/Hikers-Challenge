@@ -3,7 +3,7 @@ package com.example.hikerschallenge
 import android.util.Log
 import java.io.Serializable
 
-data class Badge(var name: String): Serializable {
+data class Badge(var name: String, var location: String = "Unknown"): Serializable {
 
     private val tag = "BadgeClass"
 

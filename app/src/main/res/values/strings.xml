@@ -7,4 +7,9 @@
     <string name="example_home_image_description">Template Image Showing a Hike</string>
     <string name="example_weather" />
     <string name="badge_icon_content_desc">Badge Icon</string>
+    <string name="no_badges_text">No badges yet!</string>
+    <string name="badge_name_template">Badge Name</string>
+    <string name="badge_location_template">Badge Location</string>
+    <string name="options_menu">Options Menu</string>
+    <string name="template_text">template_text</string>
 </resources>

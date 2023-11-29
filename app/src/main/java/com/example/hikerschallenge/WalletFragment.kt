@@ -4,9 +4,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import org.w3c.dom.Text
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,11 +46,35 @@ class WalletFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_wallet, container, false)
         val table = view.findViewById<ViewGroup>(R.id.badges_table_layout)
-        // iterate over badges and put them in the table
+
+        // check if there are no badges
+        if (badgesViewModel.badgesModel!!.badges.size == 0){
+            val noBadgesText = view.findViewById<TextView>(R.id.no_badges_text)
+            noBadgesText.visibility = View.VISIBLE
+        }
+
         for (badge in badgesViewModel.badgesModel!!.badges){
             val row = layoutInflater.inflate(R.layout.badge_row, table, false)
-            val name = row.findViewById<android.widget.TextView>(R.id.badge_row_name)
-            name.text = badge.name
+            row.findViewById<TextView>(R.id.badge_row_name).text = badge.name
+            row.findViewById<TextView>(R.id.badge_row_location).text = badge.location
+            val popupMenu = PopupMenu(requireContext(), row.findViewById(R.id.menu_anchor_view))
+            popupMenu.menuInflater.inflate(R.menu.badge_row_menu, popupMenu.menu)
+
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.delete_badge -> {
+                        Log.i(tag, "Delete badge clicked for badge $badge")
+                        badgesViewModel.badgesModel!!.removeBadge(badge)
+                        true
+                    }
+                    else -> false
+                }
+            }
+
+            row.findViewById<View>(R.id.menu_anchor_view).setOnClickListener {
+                popupMenu.show()
+            }
+
             table.addView(row)
             Log.i(tag, "Badge $badge added to table")
         }

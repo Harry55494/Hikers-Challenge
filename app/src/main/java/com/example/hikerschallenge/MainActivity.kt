@@ -1,6 +1,5 @@
 package com.example.hikerschallenge
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
@@ -14,12 +13,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
 
     private var tag = "MainActivity"
-    private val modelKey = "Model"
-    private var badgesViewModel: BadgesViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val badgesViewModel = ViewModelProvider(this).get(BadgesViewModel::class.java)
+        Log.i(tag, "onCreate() run")
+
+        val badgesModel = BadgesModel(this)
+        val viewModelFactory = BadgesViewModelFactory(badgesModel, this)
+        val badgesViewModel = ViewModelProvider(this, viewModelFactory).get(BadgesViewModel::class.java)
+
 
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             isGranted: Boolean ->
@@ -52,18 +54,6 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         Log.i(tag, "Main Activity Loaded")
-    }
-
-    private fun getModel(): BadgesViewModel {
-        if (badgesViewModel == null) {
-            badgesViewModel = BadgesViewModel()
-        }
-        return badgesViewModel as BadgesViewModel
-    }
-
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        savedInstanceState.putSerializable(modelKey, getModel())
-        super.onSaveInstanceState(savedInstanceState)
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
