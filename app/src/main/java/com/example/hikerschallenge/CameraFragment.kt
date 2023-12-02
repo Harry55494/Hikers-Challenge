@@ -48,11 +48,10 @@ class CameraFragment : Fragment() {
                 }
             }
 
-            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA // This should be the back camera, but the emulator wouldn't work with that. For testing purposes, this is fine.
 
             try {
                 cameraProvider.unbindAll()
-
                 cameraProvider.bindToLifecycle(
                     this as LifecycleOwner, cameraSelector, preview)
             } catch (e: Exception) {
@@ -60,6 +59,10 @@ class CameraFragment : Fragment() {
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    private fun analyseForQRCode() {
+
     }
 
     override fun onDestroy() {

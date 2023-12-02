@@ -31,7 +31,7 @@ class BadgesAdapter(private val badges: MutableList<Badge>) : RecyclerView.Adapt
 
         fun bind(badge: Badge) {
             badgeNameTextView.text = badge.name
-            // Add any other binding logic if needed
+
         }
     }
 }

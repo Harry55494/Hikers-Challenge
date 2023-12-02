@@ -53,6 +53,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.gms:play-services-cronet:18.0.1")
 
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+
     implementation("androidx.camera:camera-core:1.4.0-alpha02")
     implementation("androidx.camera:camera-camera2:1.4.0-alpha02")
     implementation("androidx.camera:camera-lifecycle:1.4.0-alpha02")
