@@ -17,7 +17,7 @@ class BadgesAdapter(private val badges: MutableList<Badge>) : RecyclerView.Adapt
     }
 
     override fun getItemCount(): Int {
-        return badges.size
+        return minOf(badges.size, 10)
     }
 
     override fun onBindViewHolder(holder: BadgeViewHolder, position: Int) {
@@ -28,9 +28,11 @@ class BadgesAdapter(private val badges: MutableList<Badge>) : RecyclerView.Adapt
 
     inner class BadgeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val badgeNameTextView: TextView = itemView.findViewById(R.id.badge_scroller_name)
+        private val badgeSecondaryText: TextView = itemView.findViewById(R.id.badge_scroller_secondary_text)
 
         fun bind(badge: Badge) {
             badgeNameTextView.text = badge.name
+            badgeSecondaryText.text = badge.getDisplayDate()
 
         }
     }

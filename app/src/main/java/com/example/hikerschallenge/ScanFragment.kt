@@ -31,13 +31,18 @@ class ScanFragment : Fragment() {
         val id = randomGenerator.nextInt(10).toString()
         if (badgesViewModel.badgesModel!!.badges.any { it.name == badgesViewModel.dataModel!!.getBadgeInfo(id.toInt()).name }){
             Log.i(tag, "Badge already in wallet")
+            val badgeName = badgesViewModel.dataModel!!.getBadgeInfo(id.toInt()).name
+            val alertDialog = AlertDialog(this.requireContext())
+            alertDialog.showAlert("Badge already in wallet", "You already have the $badgeName badge in your wallet!")
             return
         }
         val badge = badgesViewModel.dataModel!!.getBadgeInfo(id.toInt())
         val dateCollected = Calendar.getInstance()
         badgesViewModel.badgesModel!!.addBadge(Badge(badge.name, badge.location, dateCollected))
-        badgesViewModel.badgesModel!!.badges.sort()
+        badgesViewModel.badgesModel!!.sortBadges()
         badgesViewModel.badgesModel!!.saveBadges()
+        val alertDialog = AlertDialog(this.requireContext())
+        alertDialog.showAlert("Badge collected!", "You have collected the ${badge.name} badge!")
         Log.i(tag, "badgeScanned() run")
     }
 

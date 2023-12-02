@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="100dp"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <ImageView
         android:id="@+id/badge_scroller_image"
@@ -20,6 +21,17 @@
         android:text="@string/template_text"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/badge_scroller_secondary_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/badge_scroller_name"
+        android:layout_marginTop="20sp"
+        android:text="@string/template_text"
+        android:textAlignment="center"
+        android:textColor="@color/grey"
+        android:textSize="13sp" />
 
 </RelativeLayout>

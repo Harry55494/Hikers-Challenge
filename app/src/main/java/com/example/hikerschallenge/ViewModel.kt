@@ -1,10 +1,12 @@
 package com.example.hikerschallenge
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import java.io.Serializable
+import androidx.lifecycle.Observer
 
 class BadgesViewModel(@SuppressLint("StaticFieldLeak") private val context: Context) : ViewModel(), Serializable {
     var locationPermissionGranted: Boolean = false
@@ -12,9 +14,10 @@ class BadgesViewModel(@SuppressLint("StaticFieldLeak") private val context: Cont
     var dataModel: DataModel? = DataModel(context)
     var weatherData: Array<String> = arrayOf("", "")
     var weatherDataLive: MutableLiveData<Array<String>> = MutableLiveData(weatherData)
+
 }
 
-class BadgesViewModelFactory(private val badgesModel: BadgesModel, private val context: Context) : ViewModelProvider.Factory {
+    class BadgesViewModelFactory(private val badgesModel: BadgesModel, private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(BadgesViewModel::class.java)) {
             return BadgesViewModel(context) as T

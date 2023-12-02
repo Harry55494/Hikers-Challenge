@@ -13,4 +13,5 @@
     <string name="options_menu">Options Menu</string>
     <string name="template_text">template_text</string>
     <string name="recents_title">Recently Collected</string>
+    <string name="want_to_collect_title">Want to Collect</string>
 </resources>

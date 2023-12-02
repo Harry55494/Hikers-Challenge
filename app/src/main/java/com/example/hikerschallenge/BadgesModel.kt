@@ -6,6 +6,9 @@ import android.util.Log
 import androidx.lifecycle.Observer
 import java.io.Serializable
 import java.util.Calendar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
 
 class BadgesModel(private val context: Context): Serializable {
 
@@ -36,59 +39,22 @@ class BadgesModel(private val context: Context): Serializable {
     fun saveBadges(){
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = sharedPreferences.edit()
-        val badgeNames = mutableSetOf<String>()
-        val badgeLocations = mutableSetOf<String>()
-        val badgeDates = mutableSetOf<String>()
-        for (badge in badges){
-            badgeNames.add(badge.name)
-            badgeLocations.add(badge.location)
-            badgeDates.add(badge.getDisplayDate(true))
-        }
-        editor.putStringSet("badgeNames", badgeNames)
-        editor.putStringSet("badgeLocations", badgeLocations)
-        editor.putStringSet("badgeDates", badgeDates)
+
+        val badgesJSON = Gson().toJson(badges)
+        editor.putString("badgesJSON", badgesJSON)
+
         editor.apply()
-        Log.i(tag, "Badges saved")
-        Log.i(tag, badgeNames.toString())
+        Log.i(tag, "Badges saved, $badgesJSON")
     }
 
     private fun loadBadges() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val badgeNames = sharedPreferences.getStringSet("badgeNames", setOf<String>())
-        val badgeLocations = sharedPreferences.getStringSet("badgeLocations", setOf<String>())
-        val badgeDates = sharedPreferences.getStringSet("badgeDates", setOf<String>())
-        Log.i(tag, "Badge names: $badgeNames")
-        Log.i(tag, "Badge locations: $badgeLocations")
-        Log.i(tag, "Badge dates: $badgeDates")
-        if (badgeNames == null || badgeLocations == null) {
-            Log.i(tag, "No badges saved")
-            return
-        } else {
-            val iteratorNames = badgeNames.iterator()
-            val iteratorLocations = badgeLocations.iterator()
-            val iteratorDates = badgeDates?.iterator()
+        val badgesJson = sharedPreferences.getString("badgesJSON", null)
 
-            while (iteratorNames.hasNext() && iteratorLocations.hasNext() && iteratorDates?.hasNext() == true) {
-                val badgeName = iteratorNames.next()
-                val badgeLocation = iteratorLocations.next()
-                val badgeDate = iteratorDates.next()
-                // convert date string to Calendar object
-                val datetime = badgeDate.split(" ")
-                val time = datetime[0]
-                val hoursMinutes = time.split(":")
-                val date = datetime[1]
-                val badgeDateSplit = date.split("/")
-                Log.i(tag, badgeDateSplit.toString())
-                val badgeDateCalendar = Calendar.getInstance()
-                badgeDateCalendar.set(Calendar.HOUR_OF_DAY, hoursMinutes[0].toInt())
-                badgeDateCalendar.set(Calendar.MINUTE, hoursMinutes[1].toInt())
-                badgeDateCalendar.set(Calendar.DAY_OF_MONTH, badgeDateSplit[0].toInt())
-                badgeDateCalendar.set(Calendar.MONTH, badgeDateSplit[1].toInt() - 1)
-                badgeDateCalendar.set(Calendar.YEAR, badgeDateSplit[2].toInt())
-                badges.add(Badge(badgeName, badgeLocation, badgeDateCalendar))
-            }
+        if (badgesJson != null) {
+            val badgesListType = object : TypeToken<List<Badge>>() {}.type
+            badges = Gson().fromJson(badgesJson, badgesListType)
         }
-
         Log.i(tag, "Badges loaded")
     }
 
@@ -102,8 +68,11 @@ class BadgesModel(private val context: Context): Serializable {
 
     }
 
-    private fun sortBadges(){
+    fun sortBadges(){
+        Log.i(tag, "Sorting badges")
+        Log.i(tag, badges.toString())
         badges.sort()
+        Log.i(tag, badges.toString())
     }
 
 

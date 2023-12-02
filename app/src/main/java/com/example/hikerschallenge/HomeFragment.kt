@@ -89,16 +89,24 @@ class HomeFragment : Fragment() {
         }
         badgesViewModel.weatherDataLive.observe(viewLifecycleOwner, weatherObserver)
 
-        val badgesRecyclerView = view.findViewById<RecyclerView>(R.id.horizontal_scroller)
+        val badgesRecyclerView = view.findViewById<RecyclerView>(R.id.recently_collected_scroller)
         badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         val badgesObserver = androidx.lifecycle.Observer<BadgesModel> { badgesModel ->
             badgesModel.let {
-                badgesRecyclerView.adapter = BadgesAdapter(badgesModel.badges)
+                val reversedBadges = badgesModel.badges.reversed()
+                badgesRecyclerView.adapter = BadgesAdapter(reversedBadges.toMutableList())
             }
         }
 
         badgesViewModel.badgesModel?.observe(badgesObserver)
+
+
+        val photoCard = view.findViewById<androidx.cardview.widget.CardView>(R.id.cardview)
+        photoCard.setOnLongClickListener { view ->
+            val alertDialog = AlertDialog(this.requireContext())
+            alertDialog.showAlert("Photo", "This is a photo of a mountain!")
+            true }
 
 
         Log.i(tag, "onCreateView() run")

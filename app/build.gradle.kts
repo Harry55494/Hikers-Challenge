@@ -50,6 +50,9 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
 
+    implementation("com.google.code.gson:gson:2.10")
+
+
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.gms:play-services-cronet:18.0.1")
 

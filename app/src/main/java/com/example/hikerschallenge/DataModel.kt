@@ -10,10 +10,6 @@ class DataModel(context: Context) {
     private val allBadges = mutableListOf<Badge>()
 
     init {
-        // json file data.json
-
-        // for each badge in json file
-        // allBadges.add(Badge(name, location, date))
 
         val file = "data.json"
         val json = context.assets.open(file).bufferedReader().use { it.readText() }
@@ -24,12 +20,9 @@ class DataModel(context: Context) {
             val badge = badges.getJSONObject(i)
             val name = badge.getString("name")
             val location = badge.getString("location")
-            allBadges.add(Badge(name, location))
+            allBadges.add(Badge(name, location, announceCreation = false))
         }
-
-        Log.i(tag, allBadges.toString())
-
-        Log.i(tag, "DataModel init")
+        Log.i(tag, "DataModel created")
     }
 
     fun getBadgeInfo(id: Int): Badge {
