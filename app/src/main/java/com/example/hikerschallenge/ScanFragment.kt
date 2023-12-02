@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,9 +28,15 @@ class ScanFragment : Fragment() {
 
     private fun badgeScanned(){
         val randomGenerator = java.util.Random()
-        val randomName = randomGenerator.nextInt(1000).toString()
-        val randomLocation = randomGenerator.nextInt(1000).toString()
-        badgesViewModel.badgesModel!!.addBadge(Badge(randomName, randomLocation))
+        val id = randomGenerator.nextInt(10).toString()
+        if (badgesViewModel.badgesModel!!.badges.any { it.name == badgesViewModel.dataModel!!.getBadgeInfo(id.toInt()).name }){
+            Log.i(tag, "Badge already in wallet")
+            return
+        }
+        val badge = badgesViewModel.dataModel!!.getBadgeInfo(id.toInt())
+        val dateCollected = Calendar.getInstance()
+        badgesViewModel.badgesModel!!.addBadge(Badge(badge.name, badge.location, dateCollected))
+        badgesViewModel.badgesModel!!.badges.sort()
         badgesViewModel.badgesModel!!.saveBadges()
         Log.i(tag, "badgeScanned() run")
     }

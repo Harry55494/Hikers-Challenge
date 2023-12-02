@@ -6,39 +6,39 @@
 
     <ImageView
         android:id="@+id/badge_row_image"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="match_parent"
         android:src="@drawable/baseline_brightness_high_96"
+        android:layout_alignParentStart="true"
         android:contentDescription="@string/badge_icon_content_desc" />
 
     <TextView
         android:id="@+id/badge_row_name"
         android:layout_toEndOf="@+id/badge_row_image"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="@string/badge_name_template"
         />
 
     <TextView
-        android:id="@+id/badge_row_location"
-        android:layout_toEndOf="@+id/badge_row_image"
-        android:layout_width="wrap_content"
+        android:id="@+id/badge_row_subtitle"
+        android:layout_width="200dp"
         android:layout_height="fill_parent"
-        android:textColor="@color/black"
-        android:gravity="center"
         android:layout_below="@+id/badge_row_name"
+        android:layout_toEndOf="@+id/badge_row_image"
         android:text="@string/badge_location_template"
-        />
+        android:textAlignment="viewStart"
+        android:textColor="@color/grey"
+        android:textStyle="italic" />
 
     <ImageView
         android:id="@+id/menu_anchor_view"
         android:layout_width="41dp"
         android:layout_height="37dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="170dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="0dp"
         android:layout_toEndOf="@+id/badge_row_name"
         android:src="@drawable/baseline_more_vert_24"
         android:contentDescription="@string/options_menu" />

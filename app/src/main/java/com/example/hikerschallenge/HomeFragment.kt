@@ -26,15 +26,11 @@ private const val ARG_PARAM1 = "badge_model"
  * create an instance of this fragment.
  */
 class HomeFragment : Fragment() {
-    private var badgeModel: BadgesModel? = null
     private val tag = "HomeFragment"
     private val badgesViewModel by activityViewModels<BadgesViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            badgeModel = it.getSerializable(ARG_PARAM1) as BadgesModel
-        }
         Log.i(tag, "onCreate() run")
     }
 
@@ -92,8 +88,6 @@ class HomeFragment : Fragment() {
             Log.i(tag, "weatherObserver triggered")
         }
         badgesViewModel.weatherDataLive.observe(viewLifecycleOwner, weatherObserver)
-
-
 
         val badgesRecyclerView = view.findViewById<RecyclerView>(R.id.horizontal_scroller)
         badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

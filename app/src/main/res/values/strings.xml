@@ -9,7 +9,8 @@
     <string name="badge_icon_content_desc">Badge Icon</string>
     <string name="no_badges_text">No badges yet!</string>
     <string name="badge_name_template">Badge Name</string>
-    <string name="badge_location_template">Badge Location</string>
+    <string name="badge_location_template">Badge Subtitle</string>
     <string name="options_menu">Options Menu</string>
     <string name="template_text">template_text</string>
+    <string name="recents_title">Recently Collected</string>
 </resources>

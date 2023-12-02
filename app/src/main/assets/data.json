@@ -1,0 +1,54 @@
+{
+  "badges": [
+    {
+      "id": 1,
+      "name": "First Badge",
+      "location": "Test1"
+    },
+    {
+      "id": 2,
+      "name": "Second Badge",
+      "location": "Test2"
+    },
+    {
+      "id": 3,
+      "name": "Third Badge",
+      "location": "Test3"
+    },
+    {
+      "id": 4,
+      "name": "Fourth Badge",
+      "location": "Test4"
+    },
+    {
+      "id": 5,
+      "name": "Fifth Badge",
+      "location": "Test5"
+    },
+    {
+      "id": 6,
+      "name": "Sixth Badge",
+      "location": "Test6"
+    },
+    {
+      "id": 7,
+      "name": "Seventh Badge",
+      "location": "Test7"
+    },
+    {
+      "id": 8,
+      "name": "Eighth Badge",
+      "location": "Test8"
+    },
+    {
+      "id": 9,
+      "name": "Ninth Badge",
+      "location": "Test9"
+    },
+    {
+      "id": 10,
+      "name": "Tenth Badge",
+      "location": "Test10"
+    }
+  ]
+}

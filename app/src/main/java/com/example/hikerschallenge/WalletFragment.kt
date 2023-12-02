@@ -53,7 +53,7 @@ class WalletFragment : Fragment() {
         for (badge in badgesViewModel.badgesModel!!.badges){
             val row = layoutInflater.inflate(R.layout.badge_row, table, false)
             row.findViewById<TextView>(R.id.badge_row_name).text = badge.name
-            row.findViewById<TextView>(R.id.badge_row_location).text = badge.location
+            row.findViewById<TextView>(R.id.badge_row_subtitle).text = "${badge.location}, Collected ${badge.getDisplayDate(true)}"
             val popupMenu = PopupMenu(requireContext(), row.findViewById(R.id.menu_anchor_view))
             popupMenu.menuInflater.inflate(R.menu.badge_row_menu, popupMenu.menu)
 
@@ -75,6 +75,7 @@ class WalletFragment : Fragment() {
             table.addView(row)
             Log.i(tag, "Badge $badge added to table")
         }
+
         Log.i(tag, "onCreateView() run")
         return view
     }
