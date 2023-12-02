@@ -1,7 +1,7 @@
 package com.example.hikerschallenge
 
-import android.content.Context
 import android.app.AlertDialog
+import android.content.Context
 
 class AlertDialog(private val context: Context) {
 

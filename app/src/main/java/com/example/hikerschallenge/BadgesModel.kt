@@ -4,10 +4,9 @@ import android.content.Context
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.lifecycle.Observer
-import java.io.Serializable
-import java.util.Calendar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.Serializable
 
 
 class BadgesModel(private val context: Context): Serializable {

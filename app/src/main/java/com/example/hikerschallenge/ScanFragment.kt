@@ -27,22 +27,22 @@ class ScanFragment : Fragment() {
     private val tag = "ScanFragment"
 
     private fun badgeScanned(){
-        val randomGenerator = java.util.Random()
-        val id = randomGenerator.nextInt(10).toString()
-        if (badgesViewModel.badgesModel!!.badges.any { it.name == badgesViewModel.dataModel!!.getBadgeInfo(id.toInt()).name }){
+        val scannedQR = badgesViewModel.qrvalue.value!!
+        Log.i(tag, "QR code scanned: $scannedQR")
+        if (badgesViewModel.badgesModel!!.badges.any { it.name == badgesViewModel.dataModel!!.getBadgeInfo(scannedQR).name }){
             Log.i(tag, "Badge already in wallet")
-            val badgeName = badgesViewModel.dataModel!!.getBadgeInfo(id.toInt()).name
+            val badgeName = badgesViewModel.dataModel!!.getBadgeInfo(scannedQR).name
             val alertDialog = AlertDialog(this.requireContext())
             alertDialog.showAlert("Badge already in wallet", "You already have the $badgeName badge in your wallet!")
             return
         }
-        val badge = badgesViewModel.dataModel!!.getBadgeInfo(id.toInt())
+        val badge = badgesViewModel.dataModel!!.getBadgeInfo(scannedQR)
         val dateCollected = Calendar.getInstance()
         badgesViewModel.badgesModel!!.addBadge(Badge(badge.name, badge.location, dateCollected))
         badgesViewModel.badgesModel!!.sortBadges()
         badgesViewModel.badgesModel!!.saveBadges()
         val alertDialog = AlertDialog(this.requireContext())
-        alertDialog.showAlert("Badge collected!", "You have collected the ${badge.name} badge!")
+        alertDialog.showAlert("Badge collected!", "You have collected the ${badge.name} badge! You can view it in your wallet.")
         Log.i(tag, "badgeScanned() run")
     }
 
@@ -73,6 +73,17 @@ class ScanFragment : Fragment() {
         val transaction = childFragmentManager.beginTransaction()
         transaction.add(R.id.camera_fragment_container, cameraFragment)
         transaction.commit()
+
+        val badgeHint = view.findViewById<android.widget.TextView>(R.id.no_qr_text)
+        // create listener to show add badge button when QR code is scanned
+        badgesViewModel.qrvalue.observe(viewLifecycleOwner) {
+            if (it != "" && button.visibility == View.GONE) {
+                button.visibility = View.VISIBLE
+                badgeHint.visibility = View.GONE
+            }
+            Log.i(tag, "Making button visible")
+
+        }
 
         return view
     }

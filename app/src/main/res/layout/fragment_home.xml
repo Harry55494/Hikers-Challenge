@@ -56,17 +56,30 @@
         android:id="@+id/recents_title"
         android:text="@string/recents_title"/>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:layout_marginTop="10dp"
         android:layout_below="@id/recents_title"
-        android:id="@+id/recently_collected_scroller"/>
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="16dp"
+        android:id="@+id/recents_cardview"
+        android:background="@color/common_google_signin_btn_text_dark">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/recents_title"
+            android:id="@+id/recently_collected_scroller"
+            android:background="@color/background_green_tint"/>
+
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
         android:layout_height="40dp"
-        android:layout_below="@id/recently_collected_scroller"
+        android:layout_below="@id/recents_cardview"
         android:textStyle="bold"
         android:textSize="24sp"
         android:id="@+id/want_to_collect_title"

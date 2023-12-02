@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
         val activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()) { permissions ->

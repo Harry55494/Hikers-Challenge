@@ -7,7 +7,7 @@ import org.json.JSONObject
 class DataModel(context: Context) {
 
     private val tag = "DataModel"
-    private val allBadges = mutableListOf<Badge>()
+    private val allBadges = mutableMapOf<String, Badge>()
 
     init {
 
@@ -18,15 +18,17 @@ class DataModel(context: Context) {
         val badges = obj.getJSONArray("badges")
         for (i in 0 until badges.length()) {
             val badge = badges.getJSONObject(i)
+            val id = badge.getString("id")
+            val verification = badge.getString("verification")
             val name = badge.getString("name")
             val location = badge.getString("location")
-            allBadges.add(Badge(name, location, announceCreation = false))
+            allBadges["$id,$verification"] = Badge(name, location, null, false)
         }
         Log.i(tag, "DataModel created")
     }
 
-    fun getBadgeInfo(id: Int): Badge {
-        return allBadges[id]
+    fun getBadgeInfo(idVerification: String): Badge {
+        return allBadges[idVerification]!!
     }
 
 }

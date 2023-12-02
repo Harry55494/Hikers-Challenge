@@ -1,54 +1,22 @@
 {
   "badges": [
     {
-      "id": 1,
-      "name": "First Badge",
-      "location": "Test1"
+      "id": "ae531e584d124d6cbf73c4031dee6b74",
+      "verification": "909a1787270f48d7887018b685954557",
+      "name": "Snowdon",
+      "location": "Wales"
     },
     {
-      "id": 2,
-      "name": "Second Badge",
-      "location": "Test2"
+      "id": "87c1e67344b345c5a37706224e33cff1",
+      "verification": "472b8805cd4442ee9d07b9a276d5f71f",
+      "name": "Ben Nevis",
+      "location": "Scotland"
     },
     {
-      "id": 3,
-      "name": "Third Badge",
-      "location": "Test3"
-    },
-    {
-      "id": 4,
-      "name": "Fourth Badge",
-      "location": "Test4"
-    },
-    {
-      "id": 5,
-      "name": "Fifth Badge",
-      "location": "Test5"
-    },
-    {
-      "id": 6,
-      "name": "Sixth Badge",
-      "location": "Test6"
-    },
-    {
-      "id": 7,
-      "name": "Seventh Badge",
-      "location": "Test7"
-    },
-    {
-      "id": 8,
-      "name": "Eighth Badge",
-      "location": "Test8"
-    },
-    {
-      "id": 9,
-      "name": "Ninth Badge",
-      "location": "Test9"
-    },
-    {
-      "id": 10,
-      "name": "Tenth Badge",
-      "location": "Test10"
+      "id": "b02d4e6196864eeead2b7142288b028a",
+      "verification": "4041c74445344b4591a0eb011e603e75",
+      "name": "Scafell Pike",
+      "location": "England"
     }
   ]
 }
