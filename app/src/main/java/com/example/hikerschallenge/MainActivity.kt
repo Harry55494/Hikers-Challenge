@@ -22,19 +22,6 @@ class MainActivity : AppCompatActivity() {
         val viewModelFactory = BadgesViewModelFactory(badgesModel, this)
         val badgesViewModel = ViewModelProvider(this, viewModelFactory).get(BadgesViewModel::class.java)
 
-        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            isGranted: Boolean ->
-            if (isGranted) {
-                badgesViewModel.locationPermissionGranted = true
-                Log.i(tag, "Location permission granted")
-            } else {
-                Log.i(tag, "Location permission denied")
-            }
-        }
-
-        requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_COARSE_LOCATION)
-        requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
-
         val activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             permissions.entries.forEach {
@@ -42,7 +29,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        activityResultLauncher.launch(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        activityResultLauncher.launch(arrayOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.CAMERA))
 

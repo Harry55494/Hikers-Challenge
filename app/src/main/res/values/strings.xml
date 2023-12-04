@@ -14,4 +14,6 @@
     <string name="template_text">template_text</string>
     <string name="recents_title">Recently Collected</string>
     <string name="want_to_collect_title">Want to Collect</string>
+    <string name="badge_menu_share">Share</string>
+    <string name="badge_menu_delete">Delete</string>
 </resources>

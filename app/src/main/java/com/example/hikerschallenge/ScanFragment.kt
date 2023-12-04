@@ -25,7 +25,7 @@ class ScanFragment : Fragment() {
     private var param2: String? = null
     private val badgesViewModel by activityViewModels<BadgesViewModel>()
     private val tag = "ScanFragment"
-    private var timeSinceQRCodeVisible = null as Long?
+    private val mostRecentScan = null
 
     private fun badgeScanned(){
         val scannedQR = badgesViewModel.qrvalue.value!!
@@ -34,7 +34,9 @@ class ScanFragment : Fragment() {
             Log.i(tag, "Badge already in wallet")
             val badgeName = badgesViewModel.dataModel!!.getBadgeInfo(scannedQR).name
             val alertDialog = AlertDialog(this.requireContext())
-            alertDialog.showAlert("Badge already in wallet", "You already have the $badgeName badge in your wallet!")
+            alertDialog.showAlert(
+                "Badge already in wallet",
+                "You already have the $badgeName badge in your wallet!")
             return
         }
         val badge = badgesViewModel.dataModel!!.getBadgeInfo(scannedQR)
@@ -43,7 +45,9 @@ class ScanFragment : Fragment() {
         badgesViewModel.badgesModel!!.sortBadges()
         badgesViewModel.badgesModel!!.saveBadges()
         val alertDialog = AlertDialog(this.requireContext())
-        alertDialog.showAlert("Badge collected!", "You have collected the ${badge.name} badge! You can view it in your wallet.")
+        alertDialog.showAlert(
+            "Badge collected!",
+            "You have collected the ${badge.name} badge! You can view it in your wallet.")
         Log.i(tag, "badgeScanned() run")
     }
 
@@ -82,15 +86,12 @@ class ScanFragment : Fragment() {
         badgesViewModel.qrvalue.observe(viewLifecycleOwner) { newValue ->
             Log.i(tag, "Making button visible")
             Log.i(tag, "qrvalue observer triggered")
-            if (newValue != ""){
+            if (newValue != "") {
                 button.visibility = View.VISIBLE
                 scanButtonHint.visibility = View.GONE
-                timeSinceQRCodeVisible = null
             } else {
                 button.visibility = View.GONE
-                scanButtonHint.visibility = View.VISIBLE
             }
-
         }
 
 

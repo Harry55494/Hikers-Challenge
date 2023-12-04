@@ -32,6 +32,7 @@ class CameraFragment() : Fragment() {
     private lateinit var barcodeScanner: BarcodeScanner
     private val tag = "CameraFragment"
     private val badgesViewModel by activityViewModels<BadgesViewModel>()
+    private var threadRunning = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -116,15 +117,29 @@ class CameraFragment() : Fragment() {
                 }, ContextCompat.getMainExecutor(requireContext()))
                 Log.i(tag, "Camera paused")*/
                 if (barcodes.result.isEmpty()){
-                    //badgesViewModel.qrvalue = MutableLiveData("")
+                    // set timeout on another thread coroutine to set the value to "" after 1 second
+                    if (!threadRunning){
+                        threadRunning = true
+                        val timeoutThread = Thread {
+                            Thread.sleep(1000)
+                            if (barcodes.result.isEmpty()){
+                                badgesViewModel.qrvalue.postValue("")
+                            }
+                            threadRunning = false
+                        }
+                        timeoutThread.start()
+                    }
+
                 }
 
             }
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         cameraExecutor.shutdown()
+        badgesViewModel.qrvalue.postValue("")
+        super.onDestroy()
+
     }
 
 }

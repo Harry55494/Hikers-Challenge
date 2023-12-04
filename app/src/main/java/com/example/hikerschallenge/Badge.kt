@@ -1,5 +1,7 @@
 package com.example.hikerschallenge
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import java.io.Serializable
 import java.util.Calendar
@@ -24,10 +26,15 @@ data class Badge(var name: String, var location: String = "Unknown", var dateCol
             "Unknown"
         } else {
             if (includeTime){
+                val minute = dateCollected!!.get(Calendar.MINUTE)
+                var stringMinute = minute.toString()
+                if (minute < 10){
+                    stringMinute = minute.toString().padStart(2, '0')
+                }
                 if (fullTime){
-                    "${dateCollected!!.get(Calendar.HOUR_OF_DAY)}:${dateCollected!!.get(Calendar.MINUTE)}:${dateCollected!!.get(Calendar.SECOND)}:${dateCollected!!.get(Calendar.MILLISECOND)} ${dateCollected!!.get(Calendar.DAY_OF_MONTH)}/${dateCollected!!.get(Calendar.MONTH) + 1}/${dateCollected!!.get(Calendar.YEAR)}"
+                    "${dateCollected!!.get(Calendar.HOUR_OF_DAY)}:${stringMinute}:${dateCollected!!.get(Calendar.SECOND)}:${dateCollected!!.get(Calendar.MILLISECOND)} ${dateCollected!!.get(Calendar.DAY_OF_MONTH)}/${dateCollected!!.get(Calendar.MONTH) + 1}/${dateCollected!!.get(Calendar.YEAR)}"
                 } else {
-                    "${dateCollected!!.get(Calendar.HOUR_OF_DAY)}:${dateCollected!!.get(Calendar.MINUTE)} ${dateCollected!!.get(Calendar.DAY_OF_MONTH)}/${dateCollected!!.get(Calendar.MONTH) + 1}/${dateCollected!!.get(Calendar.YEAR)}"
+                    "${dateCollected!!.get(Calendar.HOUR_OF_DAY)}:${stringMinute} ${dateCollected!!.get(Calendar.DAY_OF_MONTH)}/${dateCollected!!.get(Calendar.MONTH) + 1}/${dateCollected!!.get(Calendar.YEAR)}"
                 }
 
             } else {
@@ -47,6 +54,16 @@ data class Badge(var name: String, var location: String = "Unknown", var dateCol
         } else {
             dateCollected!!.compareTo(other.dateCollected!!)
         }
+    }
+
+    fun share(context: Context, message: String? = "I've just climbed ${name} and collected the badge in the Hiker's Challenge app!") {
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+
+        context.startActivity(Intent.createChooser(shareIntent, "Share badge"))
     }
 
 

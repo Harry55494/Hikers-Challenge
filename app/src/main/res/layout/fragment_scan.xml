@@ -3,26 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ScanFragment"
     android:background="@color/background_green"
-    android:layout_margin="20dp">
+    android:layout_margin="0dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp"
+        android:paddingTop="15dp"
         android:text="@string/add_fragment_title"
         android:textStyle="bold"
         android:textSize="34sp"
+        android:layout_marginStart="20dp"
         android:textColor="@color/titles"
         android:id="@+id/titleTextView"
         />
 
 
     <androidx.fragment.app.FragmentContainerView
-        android:layout_marginTop="30dp"
-        android:layout_width="370dp"
-        android:layout_height="460dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/camera_fragment_container"
         android:layout_below="@id/titleTextView"
         android:layout_centerHorizontal="true"
@@ -32,22 +34,32 @@
     <Button
         android:layout_width="120dp"
         android:layout_height="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginBottom="150dp"
         android:layout_centerHorizontal="true"
         android:text="Add Badge"
         android:id="@+id/addBadgeButton"
-        android:layout_below="@id/camera_fragment_container"
-        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"
         />
 
-    <TextView
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="155dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/camera_fragment_container"
-        android:id="@+id/scanButtonHint"
-        android:text="Find a badge to scan!"/>
+        android:layout_alignParentBottom="true"
+        app:cardCornerRadius="20dp">
+
+        <TextView
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:id="@+id/scanButtonHint"
+            android:text="Find a badge to scan!"
+            android:gravity="center"
+            android:background="@color/white"/>
+
+    </androidx.cardview.widget.CardView>
+
 
 
 </RelativeLayout>

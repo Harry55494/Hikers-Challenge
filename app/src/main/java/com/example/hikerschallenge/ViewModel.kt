@@ -1,6 +1,7 @@
 package com.example.hikerschallenge
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +15,7 @@ class BadgesViewModel(@SuppressLint("StaticFieldLeak") private val context: Cont
     var weatherData: Array<String> = arrayOf("", "")
     var weatherDataLive: MutableLiveData<Array<String>> = MutableLiveData(weatherData)
     var qrvalue: MutableLiveData<String> = MutableLiveData("")
+    var homeImage: Uri? = null
 
 }
 

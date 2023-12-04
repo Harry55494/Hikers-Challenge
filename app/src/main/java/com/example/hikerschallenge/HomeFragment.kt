@@ -2,17 +2,25 @@ package com.example.hikerschallenge
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.location.CurrentLocationRequest
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import org.chromium.net.CronetEngine
 import java.util.concurrent.Executors
@@ -28,9 +36,19 @@ private const val ARG_PARAM1 = "badge_model"
 class HomeFragment : Fragment() {
     private val tag = "HomeFragment"
     private val badgesViewModel by activityViewModels<BadgesViewModel>()
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            Log.i("PhotoPicker", "Selected URI: $uri")
+            badgesViewModel.homeImage = uri
+            updateImage()
+        } else {
+            Log.i("PhotoPicker", "No media selected")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         Log.i(tag, "onCreate() run")
     }
 
@@ -51,17 +69,26 @@ class HomeFragment : Fragment() {
             Log.i(tag, "Location permission not granted")
         } else {
             Log.i(tag, "Location permission granted, submitting request for location")
+
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location : Location? ->
-                    if (location != null) {
+
+            val mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(30 * 1000)
+                .setFastestInterval(5 * 1000);
+
+            fusedLocationClient.requestLocationUpdates(mLocationRequest, object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    val locationList = locationResult.locations
+                    if (locationList.isNotEmpty()) {
+                        val location = locationList.last()
                         Log.i(tag, "Location found")
                         Log.i(tag, "Location: ${location.latitude}, ${location.longitude}")
 
                         val myBuilder = CronetEngine.Builder(requireActivity())
                         val cronetEngine = myBuilder.build()
                         val executor = Executors.newSingleThreadExecutor()
-                        val requestCallback = URLRequestCallback(this.badgesViewModel)
+                        val requestCallback = URLRequestCallback(badgesViewModel)
 
                         val requestBuilder = cronetEngine.newUrlRequestBuilder(
                             "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=732af6bb744b0c60aa2041cd423fbe50&units=metric",
@@ -70,11 +97,9 @@ class HomeFragment : Fragment() {
                         )
                         val request = requestBuilder.build()
                         request.start()
-
-                    } else {
-                        Log.i(tag, "Location not found")
                     }
                 }
+            }, null)
 
         }
 
@@ -104,13 +129,27 @@ class HomeFragment : Fragment() {
 
         val photoCard = view.findViewById<androidx.cardview.widget.CardView>(R.id.cardview)
         photoCard.setOnLongClickListener { view ->
-            val alertDialog = AlertDialog(this.requireContext())
-            alertDialog.showAlert("Photo", "This is a photo of a mountain!")
-            true }
 
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
+            true }
 
         Log.i(tag, "onCreateView() run")
         return view
+    }
+
+    private fun updateImage(){
+        val imageView = view?.findViewById<androidx.appcompat.widget.AppCompatImageView>(R.id.imageView)
+        var URI = badgesViewModel.homeImage ?: return
+        URI = Uri.parse(URI.toString())
+        try {
+            val inputStream = requireActivity().contentResolver.openInputStream(URI)
+            val drawable = Drawable.createFromStream(inputStream, URI.toString())
+            imageView?.setImageDrawable(drawable)
+            Log.i("PhotoPicker", "Image updated")
+        } catch (e: Exception){
+            Log.e("PhotoPicker", "Error: $e")
+        }
     }
 
     companion object {

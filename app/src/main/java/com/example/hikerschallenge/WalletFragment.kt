@@ -61,12 +61,26 @@ class WalletFragment : Fragment() {
                 when (menuItem.itemId) {
                     R.id.delete_badge -> {
                         Log.i(tag, "Delete badge clicked for badge $badge")
-                        badgesViewModel.badgesModel!!.removeBadge(badge)
+
+                        val alertDialog = AlertDialog(requireContext())
+                        alertDialog.showAlertOptions("Delete badge?", "Are you sure you want to delete the ${badge.name} badge? You will need to scan the badge again to collect it.", "Yes",{
+                            badgesViewModel.badgesModel!!.removeBadge(badge)
+                        }, "Cancel", {
+                            Log.i(tag, "Badge deletion cancelled")
+                        })
+                        true
+                    }
+                    R.id.share_badge -> {
+                        Log.i(tag, "Share badge clicked for badge $badge")
+
+                        badge.share(requireContext())
+
                         true
                     }
                     else -> false
                 }
             }
+
 
             row.findViewById<View>(R.id.menu_anchor_view).setOnClickListener {
                 popupMenu.show()
