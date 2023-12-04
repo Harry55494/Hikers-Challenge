@@ -1,6 +1,5 @@
 package com.example.hikerschallenge
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,7 +16,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
@@ -26,10 +28,10 @@ import java.util.concurrent.Executors
 
 class CameraFragment() : Fragment() {
 
-    private val badgesViewModel by activityViewModels<BadgesViewModel>()
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var barcodeScanner: BarcodeScanner
     private val tag = "CameraFragment"
+    private val badgesViewModel by activityViewModels<BadgesViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +48,7 @@ class CameraFragment() : Fragment() {
         barcodeScanner = BarcodeScanning.getClient()
 
         startCamera()
+
     }
 
     private fun startCamera() {
@@ -93,10 +96,10 @@ class CameraFragment() : Fragment() {
                 for (barcode in barcodes) {
                     val value = barcode.displayValue
                     if (value != null) {
-                        badgesViewModel.qrvalue.value = value
-
+                        badgesViewModel.qrvalue.postValue(value)
                     }
-                    Log.i(tag, "QR Code Value: $value")
+                    val l = badgesViewModel.qrvalue.value
+                    Log.i(tag, "QR Code Value: $l")
                 }
             }
             .addOnFailureListener { e ->
@@ -113,7 +116,7 @@ class CameraFragment() : Fragment() {
                 }, ContextCompat.getMainExecutor(requireContext()))
                 Log.i(tag, "Camera paused")*/
                 if (barcodes.result.isEmpty()){
-                    badgesViewModel.qrvalue = MutableLiveData("")
+                    //badgesViewModel.qrvalue = MutableLiveData("")
                 }
 
             }

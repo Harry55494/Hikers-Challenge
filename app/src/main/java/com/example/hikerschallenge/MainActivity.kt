@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         val viewModelFactory = BadgesViewModelFactory(badgesModel, this)
         val badgesViewModel = ViewModelProvider(this, viewModelFactory).get(BadgesViewModel::class.java)
 
-
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             isGranted: Boolean ->
             if (isGranted) {

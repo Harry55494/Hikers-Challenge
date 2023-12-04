@@ -1,6 +1,7 @@
 package com.example.hikerschallenge
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -23,4 +24,5 @@ class BadgesViewModel(@SuppressLint("StaticFieldLeak") private val context: Cont
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
+
 }

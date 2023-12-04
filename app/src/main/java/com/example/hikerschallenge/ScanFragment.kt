@@ -25,6 +25,7 @@ class ScanFragment : Fragment() {
     private var param2: String? = null
     private val badgesViewModel by activityViewModels<BadgesViewModel>()
     private val tag = "ScanFragment"
+    private var timeSinceQRCodeVisible = null as Long?
 
     private fun badgeScanned(){
         val scannedQR = badgesViewModel.qrvalue.value!!
@@ -63,10 +64,12 @@ class ScanFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_scan, container, false)
 
+
         val button = view.findViewById<android.widget.Button>(R.id.addBadgeButton)
         button.setOnClickListener {
             badgeScanned()
         }
+        val scanButtonHint = view.findViewById<android.widget.TextView>(R.id.scanButtonHint)
 
         // add camera fragment
         val cameraFragment = CameraFragment()
@@ -74,16 +77,22 @@ class ScanFragment : Fragment() {
         transaction.add(R.id.camera_fragment_container, cameraFragment)
         transaction.commit()
 
-        val badgeHint = view.findViewById<android.widget.TextView>(R.id.no_qr_text)
+
         // create listener to show add badge button when QR code is scanned
-        badgesViewModel.qrvalue.observe(viewLifecycleOwner) {
-            if (it != "" && button.visibility == View.GONE) {
-                button.visibility = View.VISIBLE
-                badgeHint.visibility = View.GONE
-            }
+        badgesViewModel.qrvalue.observe(viewLifecycleOwner) { newValue ->
             Log.i(tag, "Making button visible")
+            Log.i(tag, "qrvalue observer triggered")
+            if (newValue != ""){
+                button.visibility = View.VISIBLE
+                scanButtonHint.visibility = View.GONE
+                timeSinceQRCodeVisible = null
+            } else {
+                button.visibility = View.GONE
+                scanButtonHint.visibility = View.VISIBLE
+            }
 
         }
+
 
         return view
     }

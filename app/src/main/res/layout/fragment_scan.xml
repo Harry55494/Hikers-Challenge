@@ -46,7 +46,7 @@
         android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/camera_fragment_container"
-        android:id="@+id/no_qr_text"
+        android:id="@+id/scanButtonHint"
         android:text="Find a badge to scan!"/>
 
 
