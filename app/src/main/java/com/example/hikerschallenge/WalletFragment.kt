@@ -1,14 +1,18 @@
 package com.example.hikerschallenge
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,13 +40,13 @@ class WalletFragment : Fragment() {
         Log.i(tag, "onCreate() run")
     }
 
+    @SuppressLint("CutPasteId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_wallet, container, false)
-        val table = view.findViewById<ViewGroup>(R.id.badges_table_layout)
 
         // check if there are no badges
         if (badgesViewModel.badgesModel!!.badges.size == 0){
@@ -50,45 +54,19 @@ class WalletFragment : Fragment() {
             noBadgesText.visibility = View.VISIBLE
         }
 
-        for (badge in badgesViewModel.badgesModel!!.badges){
-            val row = layoutInflater.inflate(R.layout.badge_row, table, false)
-            row.findViewById<TextView>(R.id.badge_row_name).text = badge.name
-            row.findViewById<TextView>(R.id.badge_row_subtitle).text = "${badge.location}, Collected ${badge.getDisplayDate(true)}"
-            val popupMenu = PopupMenu(requireContext(), row.findViewById(R.id.menu_anchor_view))
-            popupMenu.menuInflater.inflate(R.menu.badge_row_menu, popupMenu.menu)
+        val badgesRecyclerView = view.findViewById<RecyclerView>(R.id.wallet_recycler)
+        badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.delete_badge -> {
-                        Log.i(tag, "Delete badge clicked for badge $badge")
-
-                        val alertDialog = AlertDialog(requireContext())
-                        alertDialog.showAlertOptions("Delete badge?", "Are you sure you want to delete the ${badge.name} badge? You will need to scan the badge again to collect it.", "Yes",{
-                            badgesViewModel.badgesModel!!.removeBadge(badge)
-                        }, "Cancel", {
-                            Log.i(tag, "Badge deletion cancelled")
-                        })
-                        true
-                    }
-                    R.id.share_badge -> {
-                        Log.i(tag, "Share badge clicked for badge $badge")
-
-                        badge.share(requireContext())
-
-                        true
-                    }
-                    else -> false
+        val badgesObserver = androidx.lifecycle.Observer<BadgesModel> { badgesModel ->
+            badgesModel.let {
+                val reversedBadges = badgesViewModel.dataModel?.getAllBadges()?.reversed()
+                if (reversedBadges != null) {
+                    badgesRecyclerView.adapter = BadgesAdapterVertical(reversedBadges.toMutableList(), badgesViewModel)
                 }
             }
-
-
-            row.findViewById<View>(R.id.menu_anchor_view).setOnClickListener {
-                popupMenu.show()
-            }
-
-            table.addView(row)
-            Log.i(tag, "Badge $badge added to table")
         }
+
+        badgesViewModel.badgesModel?.observe(badgesObserver)
 
         Log.i(tag, "onCreateView() run")
         return view

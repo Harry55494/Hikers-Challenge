@@ -3,7 +3,6 @@ package com.example.hikerschallenge
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
-import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -74,7 +72,7 @@ class HomeFragment : Fragment() {
 
             val mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(30 * 1000)
+                .setInterval(1 * 1000)
                 .setFastestInterval(5 * 1000);
 
             fusedLocationClient.requestLocationUpdates(mLocationRequest, object : LocationCallback() {
@@ -115,12 +113,12 @@ class HomeFragment : Fragment() {
         badgesViewModel.weatherDataLive.observe(viewLifecycleOwner, weatherObserver)
 
         val badgesRecyclerView = view.findViewById<RecyclerView>(R.id.recently_collected_scroller)
-        badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         val badgesObserver = androidx.lifecycle.Observer<BadgesModel> { badgesModel ->
             badgesModel.let {
                 val reversedBadges = badgesModel.badges.reversed()
-                badgesRecyclerView.adapter = BadgesAdapter(reversedBadges.toMutableList())
+                badgesRecyclerView.adapter = BadgesAdapterHorizontal(reversedBadges.toMutableList())
             }
         }
 

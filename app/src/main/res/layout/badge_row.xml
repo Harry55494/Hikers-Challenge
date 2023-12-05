@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     android:paddingBottom="8dp"
     android:paddingTop="8dp">
 
@@ -10,7 +12,7 @@
         android:layout_width="50dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="10dp"
-        android:src="@drawable/baseline_brightness_high_96"
+        android:src="@drawable/baseline_add_24"
         android:layout_alignParentStart="true"
         android:contentDescription="@string/badge_icon_content_desc" />
 

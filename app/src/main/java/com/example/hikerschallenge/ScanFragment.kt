@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.datatransport.BuildConfig
 import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,7 +26,6 @@ class ScanFragment : Fragment() {
     private var param2: String? = null
     private val badgesViewModel by activityViewModels<BadgesViewModel>()
     private val tag = "ScanFragment"
-    private val mostRecentScan = null
 
     private fun badgeScanned(){
         val scannedQR = badgesViewModel.qrvalue.value!!
@@ -41,7 +41,7 @@ class ScanFragment : Fragment() {
         }
         val badge = badgesViewModel.dataModel!!.getBadgeInfo(scannedQR)
         val dateCollected = Calendar.getInstance()
-        badgesViewModel.badgesModel!!.addBadge(Badge(badge.name, badge.location, dateCollected))
+        badgesViewModel.badgesModel!!.addBadge(Badge(badge.name, badge.location, badge.location_2, dateCollected))
         badgesViewModel.badgesModel!!.sortBadges()
         badgesViewModel.badgesModel!!.saveBadges()
         val alertDialog = AlertDialog(this.requireContext())
@@ -74,6 +74,14 @@ class ScanFragment : Fragment() {
             badgeScanned()
         }
         val scanButtonHint = view.findViewById<android.widget.TextView>(R.id.scanButtonHint)
+
+        val permissionCheck = context?.checkCallingOrSelfPermission(android.Manifest.permission.CAMERA)!!
+        val response = permissionCheck == 0
+        if (!response){
+            Log.i(tag, "Camera permission not granted")
+            scanButtonHint.text = "Please enable Camera"
+
+        }
 
         // add camera fragment
         val cameraFragment = CameraFragment()

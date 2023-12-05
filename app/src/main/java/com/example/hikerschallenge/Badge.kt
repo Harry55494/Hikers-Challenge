@@ -6,7 +6,7 @@ import android.util.Log
 import java.io.Serializable
 import java.util.Calendar
 
-data class Badge(var name: String, var location: String = "Unknown", var dateCollected: Calendar? = null, var announceCreation: Boolean = true): Serializable, Comparable<Badge> {
+data class Badge(var name: String, var location: String = "Unknown", var location_2: String = "Unknown", var dateCollected: Calendar? = null, var announceCreation: Boolean = true): Serializable, Comparable<Badge> {
 
     private val tag = "BadgeClass"
 

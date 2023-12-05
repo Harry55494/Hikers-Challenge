@@ -3,40 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".WalletFragment"
-    android:layout_margin="20dp">
+    android:layout_margin="8dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:paddingTop="7dp"
         android:text="@string/wallet_fragment_title"
         android:textStyle="bold"
         android:textSize="34sp"
+        android:layout_marginStart="13dp"
         android:textColor="@color/titles"
         android:id="@+id/titleTextView"
         />
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/titleTextView"
-        android:layout_marginTop="30dp"
-        android:scrollbars="vertical">
-
-        <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:stretchColumns="1"
-            android:id="@+id/badges_table_layout">
-
-            <TableRow
-                android:id="@+id/badge_row">
-            </TableRow>
-
-        </TableLayout>
-
-    </androidx.core.widget.NestedScrollView>
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,10 +25,27 @@
         android:layout_below="@id/titleTextView"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="270dp"
         android:text="@string/no_badges_text"
         android:id="@+id/no_badges_text"
         android:visibility="invisible"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="16dp"
+        android:layout_below="@id/titleTextView">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_green_tint"
+            android:id="@+id/wallet_recycler"/>
+
+    </androidx.cardview.widget.CardView>
+
+
 
 
 </RelativeLayout>

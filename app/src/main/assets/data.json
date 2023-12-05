@@ -5,21 +5,21 @@
       "verification": "909a1787270f48d7887018b685954557",
       "name": "Snowdon",
       "location": "Wales",
-      "country": "United Kingdom"
+      "location_2": "United Kingdom"
     },
     {
       "id": "87c1e67344b345c5a37706224e33cff1",
       "verification": "472b8805cd4442ee9d07b9a276d5f71f",
       "name": "Ben Nevis",
       "location": "Scotland",
-        "country": "United Kingdom"
+      "location_2": "United Kingdom"
     },
     {
       "id": "b02d4e6196864eeead2b7142288b028a",
       "verification": "4041c74445344b4591a0eb011e603e75",
       "name": "Scafell Pike",
       "location": "England",
-        "country": "United Kingdom"
+      "location_2": "United Kingdom"
     }
   ]
 }

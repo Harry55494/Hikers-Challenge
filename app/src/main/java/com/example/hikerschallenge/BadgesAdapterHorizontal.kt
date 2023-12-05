@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class BadgesAdapter(private val badges: MutableList<Badge>) : RecyclerView.Adapter<BadgesAdapter.BadgeViewHolder>() {
+class BadgesAdapterHorizontal(private val badges: MutableList<Badge>) : RecyclerView.Adapter<BadgesAdapterHorizontal.BadgeViewHolder>() {
 
     private val tag = "BadgesAdapter"
 

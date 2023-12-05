@@ -22,13 +22,18 @@ class DataModel(context: Context) {
             val verification = badge.getString("verification")
             val name = badge.getString("name")
             val location = badge.getString("location")
-            allBadges["$id,$verification"] = Badge(name, location, null, false)
+            val location_2 = badge.getString("location_2")
+            allBadges["$id,$verification"] = Badge(name, location, location_2, null, false)
         }
         Log.i(tag, "DataModel created")
     }
 
     fun getBadgeInfo(idVerification: String): Badge {
         return allBadges[idVerification]!!
+    }
+
+    fun getAllBadges(): List<Badge> {
+        return allBadges.values.toList()
     }
 
 }
