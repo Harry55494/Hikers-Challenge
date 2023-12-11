@@ -10,11 +10,10 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerView.Adapter<BadgesAdapterVertical.BadgeViewHolder>() {
+class BadgesAdapterVertical(private val appViewModel: AppViewModel, var filter: String? = null) : RecyclerView.Adapter<BadgesAdapterVertical.BadgeViewHolder>() {
 
     private val tag = "BadgesAdapter"
-    private val allBadges = appViewModel.badgesModel!!.getAllBadges()
-    private val userBadges = appViewModel.badgesModel!!.userBadges
+    private var allBadges = appViewModel.badgesModel!!.getAllBadges()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BadgeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.badge_row, parent, false)
@@ -39,13 +38,20 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
 
         fun bind(badgeToDisplay: DataBadge) {
 
+            val inTracked = appViewModel.badgesModel!!.getWantToCollect().any { it.id == badgeToDisplay.id }
+
             val badgeID = badgeToDisplay.id
             val displayName = badgeToDisplay.name
             val localLocation = badgeToDisplay.localLocation
             val countryLocation = badgeToDisplay.countryLocation
+            val countryflag = badgeToDisplay.countryflag
 
-            badgeNameTextView.text = displayName
-            badgeDescription.text = "${localLocation}, ${countryLocation}"
+            badgeNameTextView.text = displayName + if (inTracked) " (Tracked)" else ""
+            badgeDescription.text = "${localLocation}, ${countryLocation} $countryflag"
+
+            if (inTracked){
+                imageView.setImageResource(R.drawable.share_location)
+            }
 
             if (appViewModel.badgesModel?.isBadgeCollected(badgeToDisplay.id) == true){
                 Log.i(tag, "Badge ${badgeToDisplay.name} has been collected, getting user data")
@@ -53,7 +59,7 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
                 if (userBadge != null) {
                     Log.i(tag, "User badge found: $userBadge")
                     badgeDescription.text = "${userBadge.localLocation}, Collected ${userBadge.getDisplayDate(true)}"
-                    imageView.setImageResource(R.drawable.baseline_album_64)
+                    imageView.setImageResource(R.drawable.workspace_premium)
                     setupPopupMenu(itemView.context, optionsMenu, true, userBadge)
                 }
             } else {
@@ -116,7 +122,7 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
                             val alertDialog = AlertDialog(context)
                             // ask to remove badge from want to collect
                             val badgeName = appViewModel.badgesModel!!.getDataBadge(foundbadgeID).name
-                            alertDialog.showAlertOptions("Remove badge from 'Want to Collect'?", "Are you sure you want to remove the ${badgeName} badge from your 'Want to Collect' list?", "Yes",{
+                            alertDialog.showAlertOptions("Remove badge from 'Want to Collect'?", "Are you sure you want to untrack the badge '$badgeName'?", "Yes",{
                                 appViewModel.badgesModel?.removeWantToCollect(foundbadgeID)
                             }, "Cancel", {
                                 Log.i(tag, "Badge removal cancelled")
@@ -125,7 +131,16 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
                         } else {
 
                             Log.i(tag, "User wants to track badge $userBadge")
-                            appViewModel.badgesModel?.addWantToCollect(badgeID!!)
+
+                            if (appViewModel.badgesModel!!.getWantToCollect().size >= 5){
+                                val alertDialog = AlertDialog(context)
+                                alertDialog.showAlert("Too many badges!", "You can only track up to 5 badges at a time. Please untrack a badge before adding another.")
+                                return@setOnMenuItemClickListener true
+                            } else {
+                                appViewModel.badgesModel?.addWantToCollect(badgeID!!)
+                            }
+
+
                         }
 
 

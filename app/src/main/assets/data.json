@@ -1,25 +1,39 @@
 {
-  "badges": [
-    {
-      "id": "ae531e584d124d6cbf73c4031dee6b74",
-      "verification": "909a1787270f48d7887018b685954557",
-      "name": "Snowdon",
-      "location": "Wales",
-      "location_2": "United Kingdom"
-    },
-    {
-      "id": "87c1e67344b345c5a37706224e33cff1",
-      "verification": "472b8805cd4442ee9d07b9a276d5f71f",
-      "name": "Ben Nevis",
-      "location": "Scotland",
-      "location_2": "United Kingdom"
-    },
-    {
-      "id": "b02d4e6196864eeead2b7142288b028a",
-      "verification": "4041c74445344b4591a0eb011e603e75",
-      "name": "Scafell Pike",
-      "location": "England",
-      "location_2": "United Kingdom"
-    }
-  ]
+  "badges": [{
+    "id": "ae531e584d124d6cbf73c4031dee6b74",
+    "verification": "909a1787270f48d7887018b685954557",
+    "name": "Snowdon",
+    "location": "Wales",
+    "location_2": "United Kingdom"
+  }, {
+    "id": "87c1e67344b345c5a37706224e33cff1",
+    "verification": "472b8805cd4442ee9d07b9a276d5f71f",
+    "name": "Ben Nevis",
+    "location": "Scotland",
+    "location_2": "United Kingdom"
+  }, {
+    "id": "b02d4e6196864eeead2b7142288b028a",
+    "verification": "4041c74445344b4591a0eb011e603e75",
+    "name": "Scafell Pike",
+    "location": "England",
+    "location_2": "United Kingdom"
+  }, {
+    "id": "edf4ddecb4764ab58d559636c3ee35a2",
+    "verification": "f8eeba5f2ade4b969becf93d296d8a45",
+    "name": "Eiger",
+    "location": "Jungfrau Region",
+    "location_2": "Switzerland"
+  }, {
+    "id": "6c2ea24ebafa43ed957932538b7d5c18",
+    "verification": "0eb4165c8aef40a98216abc54180f336",
+    "name": "Jungfrau",
+    "location": "Jungfrau Region",
+    "location_2": "Switzerland"
+  }, {
+    "id": "d0c855b5d2ca43b5a3c00ae2cc189863",
+    "verification": "78b7049cf9ca41cab55b6395a0ee685d",
+    "name": "Mönch",
+    "location": "Jungfrau Region",
+    "location_2": "Switzerland"
+  }]
 }

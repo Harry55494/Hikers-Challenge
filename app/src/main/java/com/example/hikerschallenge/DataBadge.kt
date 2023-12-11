@@ -7,16 +7,18 @@ class DataBadge(val id: String, val verification: String) {
     lateinit var name: String
     lateinit var localLocation: String
     lateinit var countryLocation: String
+    lateinit var countryflag: String
 
     init {
         Log.i("DataBadge", "DataBadge with id '$id' created")
 
     }
 
-    fun setFields(name: String, location: String, location_2: String){
+    fun setFields(name: String, location: String, country: String){
         this.name = name
         this.localLocation = location
-        this.countryLocation = location_2
+        this.countryLocation = country
+        this.countryflag = getCountryFlag(country)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -49,6 +51,15 @@ class DataBadge(val id: String, val verification: String) {
         result = 31 * result + (countryLocation?.hashCode() ?: 0)
         result = 31 * result + verification.hashCode()
         return result
+    }
+
+    fun getCountryFlag(country: String): String{
+        if (country.lowercase() == "united kingdom"){
+            return "🇬🇧"
+        } else if (country.lowercase() == "switzerland"){
+            return "🇨🇭"
+        }
+        return ""
     }
 
 }

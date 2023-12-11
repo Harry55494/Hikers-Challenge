@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/track_badge"
-        android:icon="@drawable/baseline_add_24"
+        android:icon="@drawable/radio_button"
         android:title="@string/badge_menu_want_to_get"
         app:showAsAction="ifRoom"/>
 

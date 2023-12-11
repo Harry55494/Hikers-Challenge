@@ -62,7 +62,22 @@ class WalletFragment : Fragment() {
             }
         }
 
-        appViewModel.badgesModel?.observe(badgesObserver)
+        badgesObserver.onChanged(appViewModel.badgesModel!!)
+
+        val searchBar = view.findViewById<androidx.appcompat.widget.SearchView>(R.id.search_bar)
+        searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.i(tag, "onQueryTextSubmit() run with query: $query")
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.i(tag, "onQueryTextChange() run with newText: $newText")
+                badgesRecyclerView.adapter!!.notifyDataSetChanged()
+                return false
+            }
+        })
+
 
         Log.i(tag, "onCreateView() run")
         return view

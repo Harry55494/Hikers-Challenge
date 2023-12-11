@@ -73,6 +73,7 @@ class BadgesModel(private val context: Context): Serializable {
         for (badge in wantToCollect) {
             if (badge.id == id) {
                 wantToCollect.remove(badge)
+                Log.i(tag, "'$badge' badge removed from wantToCollect")
                 break
             }
         }
@@ -86,6 +87,8 @@ class BadgesModel(private val context: Context): Serializable {
             throw Exception("Verification code incorrect")
         }
         val newBadge = UserBadge(dataBadge, dateCollected)
+
+        removeWantToCollect(id)
 
         userBadges.add(newBadge)
         Log.i(tag, "'$newBadge' badge added")

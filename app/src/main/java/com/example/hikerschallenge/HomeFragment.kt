@@ -1,6 +1,7 @@
 package com.example.hikerschallenge
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -136,7 +138,6 @@ class HomeFragment : Fragment() {
         appViewModel.badgesModel?.observe(badgesObserver2)
 
 
-
         val photoCard = view.findViewById<androidx.cardview.widget.CardView>(R.id.cardview)
         photoCard.setOnLongClickListener { view ->
 
@@ -144,12 +145,16 @@ class HomeFragment : Fragment() {
 
             true }
 
+        if (appViewModel.homeImage != null){
+            updateImage()
+        }
+
         Log.i(tag, "onCreateView() run")
         return view
     }
 
     private fun updateImage(){
-        val imageView = view?.findViewById<androidx.appcompat.widget.AppCompatImageView>(R.id.imageView)
+        val imageView = view?.findViewById<ImageView>(R.id.imageView)
         var URI = appViewModel.homeImage ?: return
         URI = Uri.parse(URI.toString())
         if (imageView == null){

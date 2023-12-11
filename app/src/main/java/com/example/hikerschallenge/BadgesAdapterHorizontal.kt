@@ -4,10 +4,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class BadgesAdapterHorizontal(appViewModel: AppViewModel, type: String) : RecyclerView.Adapter<BadgesAdapterHorizontal.BadgeViewHolder>() {
+class BadgesAdapterHorizontal(appViewModel: AppViewModel, val type: String) : RecyclerView.Adapter<BadgesAdapterHorizontal.BadgeViewHolder>() {
 
     private val badgesList = when (type) {
         "all" -> appViewModel.badgesModel!!.getAllBadges()
@@ -36,12 +37,15 @@ class BadgesAdapterHorizontal(appViewModel: AppViewModel, type: String) : Recycl
     inner class BadgeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val badgeNameTextView: TextView = itemView.findViewById(R.id.badge_scroller_name)
         private val badgeSecondaryText: TextView = itemView.findViewById(R.id.badge_scroller_secondary_text)
+        private val badgeImage: ImageView = itemView.findViewById(R.id.badge_scroller_image)
 
         fun bind(userBadge: Any) {
-            if (userBadge is DataBadge) {
-                badgeNameTextView.text = userBadge.name
-                badgeSecondaryText.text = "${userBadge.localLocation}, ${userBadge.countryLocation}"
-            } else if (userBadge is UserBadge) {
+            if (type == "wanted") {
+                badgeNameTextView.text = (userBadge as DataBadge).name
+                badgeSecondaryText.text = userBadge.localLocation
+                badgeImage.setImageResource(R.drawable.share_location)
+            } else if (type == "user") {
+                userBadge as UserBadge
                 badgeNameTextView.text = userBadge.name
                 badgeSecondaryText.text = userBadge.getDisplayDate()
             }

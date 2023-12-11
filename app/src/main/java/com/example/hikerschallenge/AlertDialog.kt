@@ -2,8 +2,11 @@ package com.example.hikerschallenge
 
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
 
 class AlertDialog(private val context: Context) {
+
+    val tag = "AlertDialog"
 
     fun showAlert(title: String, message: String){
         val builder = AlertDialog.Builder(context)
@@ -13,6 +16,7 @@ class AlertDialog(private val context: Context) {
             dialog.dismiss()
         }
         val dialog: AlertDialog = builder.create()
+        Log.i(tag, "showAlert() run")
         dialog.show()
     }
 
