@@ -7,7 +7,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class BadgesAdapterHorizontal(private val badges: MutableList<Badge>) : RecyclerView.Adapter<BadgesAdapterHorizontal.BadgeViewHolder>() {
+class BadgesAdapterHorizontal(appViewModel: AppViewModel, type: String) : RecyclerView.Adapter<BadgesAdapterHorizontal.BadgeViewHolder>() {
+
+    private val badgesList = when (type) {
+        "all" -> appViewModel.badgesModel!!.getAllBadges()
+        "user" -> appViewModel.badgesModel!!.userBadges
+        "wanted" -> appViewModel.badgesModel!!.getWantToCollect()
+        else -> appViewModel.badgesModel!!.getAllBadges()
+    }
 
     private val tag = "BadgesAdapter"
 
@@ -17,11 +24,11 @@ class BadgesAdapterHorizontal(private val badges: MutableList<Badge>) : Recycler
     }
 
     override fun getItemCount(): Int {
-        return minOf(badges.size, 10)
+        return minOf(badgesList.size, 5)
     }
 
     override fun onBindViewHolder(holder: BadgeViewHolder, position: Int) {
-        val badge = badges[position]
+        val badge = badgesList[position]
         holder.bind(badge)
         Log.i(tag, "onBindViewHolder() run")
     }
@@ -30,9 +37,14 @@ class BadgesAdapterHorizontal(private val badges: MutableList<Badge>) : Recycler
         private val badgeNameTextView: TextView = itemView.findViewById(R.id.badge_scroller_name)
         private val badgeSecondaryText: TextView = itemView.findViewById(R.id.badge_scroller_secondary_text)
 
-        fun bind(badge: Badge) {
-            badgeNameTextView.text = badge.name
-            badgeSecondaryText.text = badge.getDisplayDate()
+        fun bind(userBadge: Any) {
+            if (userBadge is DataBadge) {
+                badgeNameTextView.text = userBadge.name
+                badgeSecondaryText.text = "${userBadge.localLocation}, ${userBadge.countryLocation}"
+            } else if (userBadge is UserBadge) {
+                badgeNameTextView.text = userBadge.name
+                badgeSecondaryText.text = userBadge.getDisplayDate()
+            }
 
         }
     }

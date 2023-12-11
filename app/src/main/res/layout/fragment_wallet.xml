@@ -30,6 +30,15 @@
         android:id="@+id/no_badges_text"
         android:visibility="invisible"/>
 
+    <ImageButton
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/titleTextView"
+        android:src="@drawable/baseline_add_24"
+        android:contentDescription="TODO"
+        android:id="@+id/collected_only_button"/>
+
     <androidx.cardview.widget.CardView
         android:layout_marginTop="15dp"
         android:layout_width="match_parent"

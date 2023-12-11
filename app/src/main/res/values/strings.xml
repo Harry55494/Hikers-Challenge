@@ -16,4 +16,5 @@
     <string name="want_to_collect_title">Want to Collect</string>
     <string name="badge_menu_share">Share</string>
     <string name="badge_menu_delete">Delete</string>
+    <string name="badge_menu_want_to_get">Want to Get</string>
 </resources>

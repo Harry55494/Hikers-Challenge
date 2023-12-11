@@ -3,22 +3,23 @@ package com.example.hikerschallenge
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import java.io.Serializable
 import java.util.Calendar
 
-data class Badge(var name: String, var location: String = "Unknown", var location_2: String = "Unknown", var dateCollected: Calendar? = null, var announceCreation: Boolean = true): Serializable, Comparable<Badge> {
+class UserBadge(db: DataBadge, var dateCollected: Calendar? = null): Comparable<UserBadge>  {
 
-    private val tag = "BadgeClass"
+    private val tag: String = "UserBadge"
+    var dataID: String = db.id
+    var name: String = db.name
+    var localLocation: String = db.localLocation
+    var country: String = db.countryLocation
 
     init {
-        if (announceCreation) {
-            Log.i(tag, "'$name' created")
-            Log.i(tag, "dateCollected: $dateCollected")
-        }
+        Log.i(tag, "'$name' created")
+        Log.i(tag, "dateCollected: $dateCollected")
     }
 
     override fun toString(): String {
-        return "Badge(name='$name', location='$location', dateCollected=${getDisplayDate(true, true)})"
+        return "Badge(name='$name', dataID='$dataID', location='$localLocation', dateCollected=${getDisplayDate(true, true)})"
     }
 
     fun getDisplayDate(includeTime: Boolean = false, fullTime: Boolean = false): String {
@@ -48,11 +49,20 @@ data class Badge(var name: String, var location: String = "Unknown", var locatio
     }
 
     // override sorting
-    override fun compareTo(other: Badge): Int {
-        return if (dateCollected == null || other.dateCollected == null){
-            0
+    override fun compareTo(other: UserBadge): Int {
+        if (country == null || other.country == null){
+            return if (localLocation != other.localLocation){
+                localLocation.compareTo(other.localLocation)
+            } else {
+                name.compareTo(other.name)
+            }
+        }
+        return if (country != other.country){
+            country.compareTo(other.country)
+        } else if (localLocation != other.localLocation){
+            localLocation.compareTo(other.localLocation)
         } else {
-            dateCollected!!.compareTo(other.dateCollected!!)
+            name.compareTo(other.name)
         }
     }
 

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class BadgeDetailsFragment(badge: Badge) : Fragment() {
+class BadgeDetailsFragment(userBadge: UserBadge) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -27,7 +27,7 @@ class CameraFragment() : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var barcodeScanner: BarcodeScanner
     private val tag = "CameraFragment"
-    private val badgesViewModel by activityViewModels<BadgesViewModel>()
+    private val appViewModel by activityViewModels<AppViewModel>()
     private var threadRunning = false
 
     override fun onCreateView(
@@ -93,9 +93,9 @@ class CameraFragment() : Fragment() {
                 for (barcode in barcodes) {
                     val value = barcode.displayValue
                     if (value != null) {
-                        badgesViewModel.qrvalue.postValue(value)
+                        appViewModel.qrvalue.postValue(value)
                     }
-                    val l = badgesViewModel.qrvalue.value
+                    val l = appViewModel.qrvalue.value
                     Log.i(tag, "QR Code Value: $l")
                 }
             }
@@ -119,7 +119,7 @@ class CameraFragment() : Fragment() {
                         val timeoutThread = Thread {
                             Thread.sleep(1000)
                             if (barcodes.result.isEmpty()){
-                                badgesViewModel.qrvalue.postValue("")
+                                appViewModel.qrvalue.postValue("")
                             }
                             threadRunning = false
                         }
@@ -133,7 +133,7 @@ class CameraFragment() : Fragment() {
 
     override fun onDestroy() {
         cameraExecutor.shutdown()
-        badgesViewModel.qrvalue.postValue("")
+        appViewModel.qrvalue.postValue("")
         super.onDestroy()
 
     }

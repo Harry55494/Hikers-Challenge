@@ -6,8 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -28,7 +26,7 @@ class WalletFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private val badgesViewModel by activityViewModels<BadgesViewModel>()
+    private val appViewModel by activityViewModels<AppViewModel>()
     private val tag = "WalletFragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,24 +47,22 @@ class WalletFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_wallet, container, false)
 
         // check if there are no badges
-        if (badgesViewModel.badgesModel!!.badges.size == 0){
+        if (appViewModel.badgesModel!!.userBadges.size == 0){
             val noBadgesText = view.findViewById<TextView>(R.id.no_badges_text)
             noBadgesText.visibility = View.VISIBLE
         }
+
 
         val badgesRecyclerView = view.findViewById<RecyclerView>(R.id.wallet_recycler)
         badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         val badgesObserver = androidx.lifecycle.Observer<BadgesModel> { badgesModel ->
             badgesModel.let {
-                val reversedBadges = badgesViewModel.dataModel?.getAllBadges()?.reversed()
-                if (reversedBadges != null) {
-                    badgesRecyclerView.adapter = BadgesAdapterVertical(reversedBadges.toMutableList(), badgesViewModel)
-                }
+                badgesRecyclerView.adapter = BadgesAdapterVertical(appViewModel)
             }
         }
 
-        badgesViewModel.badgesModel?.observe(badgesObserver)
+        appViewModel.badgesModel?.observe(badgesObserver)
 
         Log.i(tag, "onCreateView() run")
         return view

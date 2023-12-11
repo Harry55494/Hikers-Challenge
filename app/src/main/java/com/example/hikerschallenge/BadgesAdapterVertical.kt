@@ -10,9 +10,11 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class BadgesAdapterVertical(private val badges: MutableList<Badge>, private val badgesViewModel: BadgesViewModel) : RecyclerView.Adapter<BadgesAdapterVertical.BadgeViewHolder>() {
+class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerView.Adapter<BadgesAdapterVertical.BadgeViewHolder>() {
 
     private val tag = "BadgesAdapter"
+    private val allBadges = appViewModel.badgesModel!!.getAllBadges()
+    private val userBadges = appViewModel.badgesModel!!.userBadges
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BadgeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.badge_row, parent, false)
@@ -20,11 +22,11 @@ class BadgesAdapterVertical(private val badges: MutableList<Badge>, private val 
     }
 
     override fun getItemCount(): Int {
-        return badges.size
+        return allBadges.size
     }
 
     override fun onBindViewHolder(holder: BadgeViewHolder, position: Int) {
-        val badge = badges[position]
+        val badge = allBadges[position]
         holder.bind(badge)
         Log.i(tag, "onBindViewHolder()2 run")
     }
@@ -35,51 +37,106 @@ class BadgesAdapterVertical(private val badges: MutableList<Badge>, private val 
         private val badgeDescription: TextView = itemView.findViewById(R.id.badge_row_subtitle)
         private val optionsMenu: View = itemView.findViewById(R.id.menu_anchor_view)
 
-        fun bind(badge: Badge) {
-            val collected = badgesViewModel.badgesModel!!.badges.any { it.name == badge.name }
-            val userBadge: Badge? = badgesViewModel.badgesModel!!.badges.find { it.name == badge.name }
-            badgeNameTextView.text = badge.name
-            setupPopupMenu(itemView.context, optionsMenu, badge)
+        fun bind(badgeToDisplay: DataBadge) {
 
-            if (collected){
+            val badgeID = badgeToDisplay.id
+            val displayName = badgeToDisplay.name
+            val localLocation = badgeToDisplay.localLocation
+            val countryLocation = badgeToDisplay.countryLocation
+
+            badgeNameTextView.text = displayName
+            badgeDescription.text = "${localLocation}, ${countryLocation}"
+
+            if (appViewModel.badgesModel?.isBadgeCollected(badgeToDisplay.id) == true){
+                Log.i(tag, "Badge ${badgeToDisplay.name} has been collected, getting user data")
+                val userBadge = appViewModel.badgesModel?.userBadges?.find { it.dataID == badgeToDisplay.id }
                 if (userBadge != null) {
-                    badgeDescription.text = "${badge.location}, Collected ${userBadge.getDisplayDate(true)}"
-                    imageView.setImageResource(R.drawable.baseline_brightness_high_64)
+                    Log.i(tag, "User badge found: $userBadge")
+                    badgeDescription.text = "${userBadge.localLocation}, Collected ${userBadge.getDisplayDate(true)}"
+                    imageView.setImageResource(R.drawable.baseline_album_64)
+                    setupPopupMenu(itemView.context, optionsMenu, true, userBadge)
                 }
             } else {
-                badgeDescription.text = "${badge.location}, ${badge.location_2}"
+                setupPopupMenu(itemView.context, optionsMenu, false, null, badgeID)
             }
 
         }
     }
 
-    fun setupPopupMenu(context: Context, view: View, badge: Badge){
+    fun setupPopupMenu(context: Context, view: View, collectedBage: Boolean, userBadge: UserBadge?, badgeID: String? = null){
         val popupMenu = PopupMenu(context, view)
-        popupMenu.menuInflater.inflate(R.menu.badge_row_menu, popupMenu.menu)
 
-        popupMenu.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.delete_badge -> {
-                    Log.i(tag, "Delete badge clicked for badge $badge")
+        if (collectedBage){
 
-                    val alertDialog = AlertDialog(context)
-                    alertDialog.showAlertOptions("Delete badge?", "Are you sure you want to delete the ${badge.name} badge? You will need to scan the badge again to collect it.", "Yes",{
-                        badgesViewModel.badgesModel!!.removeBadge(badge)
-                    }, "Cancel", {
-                        Log.i(tag, "Badge deletion cancelled")
-                    })
-                    true
+            popupMenu.menuInflater.inflate(R.menu.collected_badge_row_menu, popupMenu.menu)
+
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.delete_badge -> {
+                        Log.i(tag, "Delete badge clicked for badge $userBadge")
+
+                        val alertDialog = AlertDialog(context)
+                        if (userBadge != null) {
+                            alertDialog.showAlertOptions("Delete badge?", "Are you sure you want to delete the ${userBadge.name} badge? You will need to scan the badge again to collect it.", "Yes",{
+                                appViewModel.badgesModel?.removeUserBadge(userBadge.dataID)
+                            }, "Cancel", {
+                                Log.i(tag, "Badge deletion cancelled")
+                            })
+                        }
+                        true
+                    }
+                    R.id.share_badge -> {
+                        Log.i(tag, "Share badge clicked for badge $userBadge")
+
+                        userBadge?.share(context)
+
+                        true
+                    }
+                    else -> false
                 }
-                R.id.share_badge -> {
-                    Log.i(tag, "Share badge clicked for badge $badge")
+            }
+        } else {
+            popupMenu.menuInflater.inflate(R.menu.uncollected_badge_row_menu, popupMenu.menu)
 
-                    badge.share(context)
+            var found = false
+            var foundbadgeID: String = null.toString()
 
-                    true
+            for (badge in appViewModel.badgesModel?.getWantToCollect()!!){
+                if (badge.id == badgeID){
+                    found = true
+                    foundbadgeID = badge.id
+                    popupMenu.menu.findItem(R.id.track_badge).title = "Untrack Badge"}
+            }
+
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.track_badge -> {
+
+                        if (found){
+                            val alertDialog = AlertDialog(context)
+                            // ask to remove badge from want to collect
+                            val badgeName = appViewModel.badgesModel!!.getDataBadge(foundbadgeID).name
+                            alertDialog.showAlertOptions("Remove badge from 'Want to Collect'?", "Are you sure you want to remove the ${badgeName} badge from your 'Want to Collect' list?", "Yes",{
+                                appViewModel.badgesModel?.removeWantToCollect(foundbadgeID)
+                            }, "Cancel", {
+                                Log.i(tag, "Badge removal cancelled")
+                            })
+
+                        } else {
+
+                            Log.i(tag, "User wants to track badge $userBadge")
+                            appViewModel.badgesModel?.addWantToCollect(badgeID!!)
+                        }
+
+
+
+                        true
+                    }
+                    else -> false
                 }
-                else -> false
             }
         }
+
 
         view.setOnClickListener {
             popupMenu.show()

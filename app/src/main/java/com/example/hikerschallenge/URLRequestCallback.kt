@@ -7,7 +7,7 @@ import org.chromium.net.UrlResponseInfo
 import java.nio.ByteBuffer
 
 
-class URLRequestCallback(private val viewModel: BadgesViewModel) : UrlRequest.Callback() {
+class URLRequestCallback(private val viewModel: AppViewModel) : UrlRequest.Callback() {
 
     private val tag = "URLRequestCallback"
     private var weatherData = ArrayList<String>()

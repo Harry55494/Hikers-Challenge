@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.datatransport.BuildConfig
-import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,30 +22,30 @@ class ScanFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private val badgesViewModel by activityViewModels<BadgesViewModel>()
+    private val appViewModel by activityViewModels<AppViewModel>()
     private val tag = "ScanFragment"
 
     private fun badgeScanned(){
-        val scannedQR = badgesViewModel.qrvalue.value!!
+        val scannedQR = appViewModel.qrvalue.value!!
         Log.i(tag, "QR code scanned: $scannedQR")
-        if (badgesViewModel.badgesModel!!.badges.any { it.name == badgesViewModel.dataModel!!.getBadgeInfo(scannedQR).name }){
+        val id = scannedQR.split(",")[0]
+        val verification = scannedQR.split(",")[1]
+        if (appViewModel.badgesModel!!.userBadges.any { it.dataID == id }){
             Log.i(tag, "Badge already in wallet")
-            val badgeName = badgesViewModel.dataModel!!.getBadgeInfo(scannedQR).name
+            val badgeName = appViewModel.badgesModel!!.getDataBadge(id).name
             val alertDialog = AlertDialog(this.requireContext())
             alertDialog.showAlert(
                 "Badge already in wallet",
                 "You already have the $badgeName badge in your wallet!")
             return
         }
-        val badge = badgesViewModel.dataModel!!.getBadgeInfo(scannedQR)
-        val dateCollected = Calendar.getInstance()
-        badgesViewModel.badgesModel!!.addBadge(Badge(badge.name, badge.location, badge.location_2, dateCollected))
-        badgesViewModel.badgesModel!!.sortBadges()
-        badgesViewModel.badgesModel!!.saveBadges()
+        val newBadge = appViewModel.badgesModel!!.claimUserBadge(id, verification)
+        appViewModel.badgesModel!!.sortUserBadges()
+        appViewModel.badgesModel!!.saveModel()
         val alertDialog = AlertDialog(this.requireContext())
         alertDialog.showAlert(
             "Badge collected!",
-            "You have collected the ${badge.name} badge! You can view it in your wallet.")
+            "You have collected the ${newBadge.name} badge! You can view it in your wallet.")
         Log.i(tag, "badgeScanned() run")
     }
 
@@ -58,7 +56,7 @@ class ScanFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
         Log.i(tag, "onCreate() run")
-        Log.i(tag, badgesViewModel.badgesModel.toString())
+        Log.i(tag, appViewModel.badgesModel.toString())
     }
 
     override fun onCreateView(
@@ -91,7 +89,7 @@ class ScanFragment : Fragment() {
 
 
         // create listener to show add badge button when QR code is scanned
-        badgesViewModel.qrvalue.observe(viewLifecycleOwner) { newValue ->
+        appViewModel.qrvalue.observe(viewLifecycleOwner) { newValue ->
             Log.i(tag, "Making button visible")
             Log.i(tag, "qrvalue observer triggered")
             if (newValue != "") {

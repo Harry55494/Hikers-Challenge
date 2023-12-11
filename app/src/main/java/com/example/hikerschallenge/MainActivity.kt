@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         val badgesModel = BadgesModel(this)
         val viewModelFactory = BadgesViewModelFactory(badgesModel, this)
-        val badgesViewModel = ViewModelProvider(this, viewModelFactory).get(BadgesViewModel::class.java)
+        val appViewModel = ViewModelProvider(this, viewModelFactory).get(AppViewModel::class.java)
 
         val activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()) { permissions ->

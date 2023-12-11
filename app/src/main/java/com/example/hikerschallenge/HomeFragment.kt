@@ -33,11 +33,11 @@ private const val ARG_PARAM1 = "badge_model"
  */
 class HomeFragment : Fragment() {
     private val tag = "HomeFragment"
-    private val badgesViewModel by activityViewModels<BadgesViewModel>()
+    private val appViewModel by activityViewModels<AppViewModel>()
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             Log.i("PhotoPicker", "Selected URI: $uri")
-            badgesViewModel.homeImage = uri
+            appViewModel.homeImage = uri
             updateImage()
         } else {
             Log.i("PhotoPicker", "No media selected")
@@ -86,9 +86,10 @@ class HomeFragment : Fragment() {
                         val myBuilder = CronetEngine.Builder(requireActivity())
                         val cronetEngine = myBuilder.build()
                         val executor = Executors.newSingleThreadExecutor()
-                        val requestCallback = URLRequestCallback(badgesViewModel)
+                        val requestCallback = URLRequestCallback(appViewModel)
 
                         val requestBuilder = cronetEngine.newUrlRequestBuilder(
+                            // Please don't steal my API key, I am but a lowly student :)
                             "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=732af6bb744b0c60aa2041cd423fbe50&units=metric",
                             requestCallback,
                             executor
@@ -110,19 +111,30 @@ class HomeFragment : Fragment() {
             }
             Log.i(tag, "weatherObserver triggered")
         }
-        badgesViewModel.weatherDataLive.observe(viewLifecycleOwner, weatherObserver)
+        appViewModel.weatherDataLive.observe(viewLifecycleOwner, weatherObserver)
 
         val badgesRecyclerView = view.findViewById<RecyclerView>(R.id.recently_collected_scroller)
-        badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         val badgesObserver = androidx.lifecycle.Observer<BadgesModel> { badgesModel ->
             badgesModel.let {
-                val reversedBadges = badgesModel.badges.reversed()
-                badgesRecyclerView.adapter = BadgesAdapterHorizontal(reversedBadges.toMutableList())
+                badgesRecyclerView.adapter = BadgesAdapterHorizontal(appViewModel, "user")
             }
         }
 
-        badgesViewModel.badgesModel?.observe(badgesObserver)
+        appViewModel.badgesModel?.observe(badgesObserver)
+
+        val badgesRecyclerView2 = view.findViewById<RecyclerView>(R.id.want_to_collect_scroller)
+        badgesRecyclerView2.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        val badgesObserver2 = androidx.lifecycle.Observer<BadgesModel> { badgesModel ->
+            badgesModel.let {
+                badgesRecyclerView2.adapter = BadgesAdapterHorizontal(appViewModel, "wanted")
+            }
+        }
+
+        appViewModel.badgesModel?.observe(badgesObserver2)
+
 
 
         val photoCard = view.findViewById<androidx.cardview.widget.CardView>(R.id.cardview)
@@ -138,12 +150,16 @@ class HomeFragment : Fragment() {
 
     private fun updateImage(){
         val imageView = view?.findViewById<androidx.appcompat.widget.AppCompatImageView>(R.id.imageView)
-        var URI = badgesViewModel.homeImage ?: return
+        var URI = appViewModel.homeImage ?: return
         URI = Uri.parse(URI.toString())
+        if (imageView == null){
+            Log.i("PhotoPicker", "imageView is null")
+            return
+        }
         try {
             val inputStream = requireActivity().contentResolver.openInputStream(URI)
             val drawable = Drawable.createFromStream(inputStream, URI.toString())
-            imageView?.setImageDrawable(drawable)
+            imageView.setImageDrawable(drawable)
             Log.i("PhotoPicker", "Image updated")
         } catch (e: Exception){
             Log.e("PhotoPicker", "Error: $e")
