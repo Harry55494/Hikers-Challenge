@@ -44,6 +44,6 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:contentDescription="@string/options_menu"
-        android:src="@drawable/baseline_more_vert_24" />
+        android:src="@drawable/more_vert" />
 
 </RelativeLayout>

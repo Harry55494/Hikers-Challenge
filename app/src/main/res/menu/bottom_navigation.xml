@@ -4,11 +4,11 @@
     <item
         android:id="@+id/homeFragment"
         android:title="@string/home_fragment_title"
-        android:icon="@drawable/home"/>
+        android:icon="@drawable/cabin"/>
     <item
         android:id="@+id/addFragment"
         android:title="@string/add_fragment_title"
-        android:icon="@drawable/baseline_add_24"/>
+        android:icon="@drawable/qr_code_scan"/>
     <item
         android:id="@+id/walletFragment"
         android:title="@string/wallet_fragment_title"

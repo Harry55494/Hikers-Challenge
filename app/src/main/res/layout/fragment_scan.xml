@@ -31,11 +31,11 @@
 
 
     <Button
-        android:layout_width="120dp"
+        android:layout_width="140dp"
         android:layout_height="50dp"
         android:layout_marginBottom="150dp"
         android:layout_centerHorizontal="true"
-        android:text="Add Badge"
+        android:text="Claim Badge"
         android:id="@+id/addBadgeButton"
         android:layout_alignParentBottom="true"
         android:visibility="visible"
