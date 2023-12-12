@@ -1,6 +1,7 @@
 package com.example.hikerschallenge
 
 import android.content.Context
+import android.media.Image
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class BadgesAdapterVertical(private val appViewModel: AppViewModel, var filter: String? = null) : RecyclerView.Adapter<BadgesAdapterVertical.BadgeViewHolder>() {
+class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerView.Adapter<BadgesAdapterVertical.BadgeViewHolder>() {
 
     private val tag = "BadgesAdapter"
     private var allBadges = appViewModel.badgesModel!!.getAllBadges()
@@ -28,6 +29,11 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel, var filter: 
         val badge = allBadges[position]
         holder.bind(badge)
         Log.i(tag, "onBindViewHolder()2 run")
+    }
+
+    fun applyFilter(filter: String){
+        allBadges = appViewModel.badgesModel!!.getAllBadges().filter { it.name.contains(filter, true) || it.localLocation.contains(filter, true) || it.countryLocation.contains(filter, true) }
+        notifyDataSetChanged()
     }
 
     inner class BadgeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -51,6 +57,8 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel, var filter: 
 
             if (inTracked){
                 imageView.setImageResource(R.drawable.share_location)
+            } else {
+                imageView.setImageResource(R.drawable.radio_button)
             }
 
             if (appViewModel.badgesModel?.isBadgeCollected(badgeToDisplay.id) == true){
@@ -63,7 +71,53 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel, var filter: 
                     setupPopupMenu(itemView.context, optionsMenu, true, userBadge)
                 }
             } else {
-                setupPopupMenu(itemView.context, optionsMenu, false, null, badgeID)
+                imageView.setOnClickListener{
+
+                    var found = false
+                    var foundbadgeID: String = null.toString()
+
+                    for (badge in appViewModel.badgesModel?.getWantToCollect()!!){
+                        Log.i(tag, "Checking badge ${badge.id} against $badgeID")
+                        if (badge.id == badgeID){
+                            found = true
+                            foundbadgeID = badge.id
+                        }
+                    }
+
+
+                    if (found){
+                        val alertDialog = AlertDialog(context = itemView.context)
+                        // ask to remove badge from want to collect
+                        val badgeName = appViewModel.badgesModel!!.getDataBadge(foundbadgeID).name
+                        alertDialog.showAlertOptions("Untrack $badgeName badge?", "Are you sure you want to untrack the badge '$badgeName'?", "Yes",{
+                            appViewModel.badgesModel?.removeWantToCollect(foundbadgeID)
+                            redraw()
+                        }, "Cancel", {
+                            Log.i(tag, "Badge removal cancelled")
+                        })
+
+                    } else {
+                        val badgeName = appViewModel.badgesModel!!.getDataBadge(badgeID).name
+                        Log.i(tag, "User wants to track badge $badgeName")
+
+                        if (appViewModel.badgesModel!!.getWantToCollect().size >= 5){
+                            val alertDialog = AlertDialog(context = itemView.context)
+                            alertDialog.showAlert("Too many badges!", "You can only track up to 5 badges at a time. Please untrack a badge before adding another.")
+                        } else {
+                            appViewModel.badgesModel?.addWantToCollect(badgeID)
+                        }
+
+                        val alertDialog = AlertDialog(context = itemView.context)
+                        alertDialog.showAlert("Badge Tracked!", "You are now tracking the $badgeName badge.")
+
+
+                    }
+
+                    redraw()
+
+                }
+                //setupPopupMenu(itemView.context, optionsMenu, false, null, badgeID)
+                optionsMenu.visibility = View.GONE
             }
 
         }
@@ -85,6 +139,7 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel, var filter: 
                         if (userBadge != null) {
                             alertDialog.showAlertOptions("Delete badge?", "Are you sure you want to delete the ${userBadge.name} badge? You will need to scan the badge again to collect it.", "Yes",{
                                 appViewModel.badgesModel?.removeUserBadge(userBadge.dataID)
+                                redraw()
                             }, "Cancel", {
                                 Log.i(tag, "Badge deletion cancelled")
                             })
@@ -101,55 +156,6 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel, var filter: 
                     else -> false
                 }
             }
-        } else {
-            popupMenu.menuInflater.inflate(R.menu.uncollected_badge_row_menu, popupMenu.menu)
-
-            var found = false
-            var foundbadgeID: String = null.toString()
-
-            for (badge in appViewModel.badgesModel?.getWantToCollect()!!){
-                if (badge.id == badgeID){
-                    found = true
-                    foundbadgeID = badge.id
-                    popupMenu.menu.findItem(R.id.track_badge).title = "Untrack Badge"}
-            }
-
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.track_badge -> {
-
-                        if (found){
-                            val alertDialog = AlertDialog(context)
-                            // ask to remove badge from want to collect
-                            val badgeName = appViewModel.badgesModel!!.getDataBadge(foundbadgeID).name
-                            alertDialog.showAlertOptions("Remove badge from 'Want to Collect'?", "Are you sure you want to untrack the badge '$badgeName'?", "Yes",{
-                                appViewModel.badgesModel?.removeWantToCollect(foundbadgeID)
-                            }, "Cancel", {
-                                Log.i(tag, "Badge removal cancelled")
-                            })
-
-                        } else {
-
-                            Log.i(tag, "User wants to track badge $userBadge")
-
-                            if (appViewModel.badgesModel!!.getWantToCollect().size >= 5){
-                                val alertDialog = AlertDialog(context)
-                                alertDialog.showAlert("Too many badges!", "You can only track up to 5 badges at a time. Please untrack a badge before adding another.")
-                                return@setOnMenuItemClickListener true
-                            } else {
-                                appViewModel.badgesModel?.addWantToCollect(badgeID!!)
-                            }
-
-
-                        }
-
-
-
-                        true
-                    }
-                    else -> false
-                }
-            }
         }
 
 
@@ -157,4 +163,9 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel, var filter: 
             popupMenu.show()
         }
     }
+
+    fun redraw(){
+        notifyDataSetChanged()
+    }
+
 }

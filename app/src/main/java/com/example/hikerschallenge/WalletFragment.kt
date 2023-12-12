@@ -52,7 +52,6 @@ class WalletFragment : Fragment() {
             noBadgesText.visibility = View.VISIBLE
         }
 
-
         val badgesRecyclerView = view.findViewById<RecyclerView>(R.id.wallet_recycler)
         badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
@@ -68,12 +67,14 @@ class WalletFragment : Fragment() {
         searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.i(tag, "onQueryTextSubmit() run with query: $query")
+                val adapter = badgesRecyclerView.adapter as BadgesAdapterVertical
+                adapter.applyFilter(query!!)
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 Log.i(tag, "onQueryTextChange() run with newText: $newText")
-                badgesRecyclerView.adapter!!.notifyDataSetChanged()
+                onQueryTextSubmit(newText)
                 return false
             }
         })

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="65dp"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
     android:paddingBottom="8dp"
-    android:paddingTop="8dp">
+    android:paddingTop="15dp">
 
     <ImageView
         android:id="@+id/badge_row_image"
-        android:layout_width="50dp"
+        android:layout_width="45dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="10dp"
         android:src="@drawable/radio_button"
@@ -22,6 +22,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
+        android:textSize="7pt"
         android:text="@string/badge_name_template"
         />
 
