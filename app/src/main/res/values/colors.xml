@@ -6,5 +6,6 @@
     <color name="background_green">#c5e1a5</color>
     <color name="background_green_tint">#9DBA7C</color>
     <color name="navbar_green">#8BC34A</color>
+    <color name="deeper_forest_green">#2F8848</color>
     <color name="titles">#FF000000</color>
 </resources>

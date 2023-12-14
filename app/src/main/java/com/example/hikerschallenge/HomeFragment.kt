@@ -1,11 +1,11 @@
 package com.example.hikerschallenge
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +14,8 @@ import android.widget.ImageView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,22 +27,13 @@ import com.google.android.gms.location.LocationServices
 import org.chromium.net.CronetEngine
 import java.util.concurrent.Executors
 
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "badge_model"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
     private val tag = "HomeFragment"
     private val appViewModel by activityViewModels<AppViewModel>()
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             Log.i("PhotoPicker", "Selected URI: $uri")
-            appViewModel.homeImage = uri
-            updateImage()
+            view?.let { updateImage(it, uri) }
         } else {
             Log.i("PhotoPicker", "No media selected")
         }
@@ -64,18 +57,35 @@ class HomeFragment : Fragment() {
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             Log.i(tag, "Location permission not granted")
         } else {
-            Log.i(tag, "Location permission granted, submitting request for location")
+            for (permission in arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_MEDIA_IMAGES
+            )) {
+                if (ContextCompat.checkSelfPermission(
+                        requireActivity(),
+                        permission
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    Log.i(tag, "Permission $permission not granted")
+                } else {
+                    Log.i(tag, "Permission $permission granted")
+                }
+            }
 
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
             val mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(1 * 1000)
-                .setFastestInterval(5 * 1000);
+                .setFastestInterval(5 * 1000)
 
             fusedLocationClient.requestLocationUpdates(mLocationRequest, object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
@@ -120,7 +130,7 @@ class HomeFragment : Fragment() {
 
         val badgesObserver = androidx.lifecycle.Observer<BadgesModel> { badgesModel ->
             badgesModel.let {
-                badgesRecyclerView.adapter = BadgesAdapterHorizontal(appViewModel, "user")
+                badgesRecyclerView.adapter = BadgesAdapterHorizontal(appViewModel, "user", "reverse")
             }
         }
 
@@ -131,7 +141,7 @@ class HomeFragment : Fragment() {
 
         val badgesObserver2 = androidx.lifecycle.Observer<BadgesModel> { badgesModel ->
             badgesModel.let {
-                badgesRecyclerView2.adapter = BadgesAdapterHorizontal(appViewModel, "wanted")
+                badgesRecyclerView2.adapter = BadgesAdapterHorizontal(appViewModel, "wanted", "normal")
             }
         }
 
@@ -141,51 +151,57 @@ class HomeFragment : Fragment() {
         val photoCard = view.findViewById<androidx.cardview.widget.CardView>(R.id.cardview)
         photoCard.setOnLongClickListener { view ->
 
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            if (appViewModel.homeImage != null) {
+                val alertDialog = AlertDialog(requireContext())
+                alertDialog.showAlertOptions("Change Photo", "Do you want to remove the photo, or pick a new one?", "Remove", {appViewModel.homeImage = null; updateImage(view)}, "Pick New") {
+                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
+                updateImage(view)
+            } else {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
 
             true }
 
-        if (appViewModel.homeImage != null){
-            updateImage()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val homeImage = sharedPreferences.getString("homeImage", null)
+        if (homeImage != null){
+            updateImage(view, Uri.parse(homeImage))
         }
 
         Log.i(tag, "onCreateView() run")
         return view
     }
 
-    private fun updateImage(){
-        val imageView = view?.findViewById<ImageView>(R.id.imageView)
-        var URI = appViewModel.homeImage ?: return
-        URI = Uri.parse(URI.toString())
-        if (imageView == null){
-            Log.i("PhotoPicker", "imageView is null")
-            return
+    private fun updateImage(view: View, uri: Uri? = null){
+        val photoCard = view.findViewById<androidx.cardview.widget.CardView>(R.id.cardview)
+        val imageView = photoCard.findViewById<ImageView>(R.id.imageView)
+        Log.i("PhotoPicker", "Updating image to $uri")
+
+        if (uri == null){
+            val image = ResourcesCompat.getDrawable(resources, R.drawable.template_home_image, null)
+            imageView.setImageDrawable(image)
+            imageView.postInvalidate()
+        } else {
+            val uri2 = Uri.parse(uri.toString())
+            try {
+                val inputStream = requireActivity().contentResolver.openInputStream(uri2)
+                val drawable = Drawable.createFromStream(inputStream, uri2.toString())
+                imageView.setImageDrawable(drawable)
+                // post invalidate to redraw the view
+                imageView.postInvalidate()
+                Log.i("PhotoPicker", "Image updated")
+            } catch (e: Exception){
+                Log.e("PhotoPicker", "Error: $e")
+            }
         }
-        try {
-            val inputStream = requireActivity().contentResolver.openInputStream(URI)
-            val drawable = Drawable.createFromStream(inputStream, URI.toString())
-            imageView.setImageDrawable(drawable)
-            Log.i("PhotoPicker", "Image updated")
-        } catch (e: Exception){
-            Log.e("PhotoPicker", "Error: $e")
-        }
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = sharedPreferences.edit()
+        editor.putString("homeImage", uri.toString())
+        editor.apply()
+        Log.i("PhotoPicker", "Image '${uri.toString()}' saved to shared preferences")
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param badge_model Parameter 1.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(badge_model: BadgesModel) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, badge_model.toString())
-                }
-            }
-    }
 }

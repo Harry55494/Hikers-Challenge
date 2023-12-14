@@ -5,22 +5,24 @@ import android.content.Context
 import android.util.Log
 
 class AlertDialog(private val context: Context) {
+    // Alert Dialog, custom class to show alerts
 
     val tag = "AlertDialog"
 
     fun showAlert(title: String, message: String){
+        // Show standard alert with only OK button
         val builder = AlertDialog.Builder(context)
         builder.setTitle(title)
         builder.setMessage(message)
-        builder.setPositiveButton("OK"){dialog, which ->
+        builder.setPositiveButton("OK"){ dialog, _ ->
             dialog.dismiss()
         }
         val dialog: AlertDialog = builder.create()
-        Log.i(tag, "showAlert() run")
         dialog.show()
     }
 
     fun showAlertOptions(title: String, message: String, positiveText: String, positiveAction: () -> Unit, negativeText: String, negativeAction: () -> Unit){
+        // Show alert with two options, and custom actions for each
         val builder = AlertDialog.Builder(context)
         builder.setTitle(title)
         builder.setMessage(message)

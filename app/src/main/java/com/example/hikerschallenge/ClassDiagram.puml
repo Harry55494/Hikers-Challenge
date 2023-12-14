@@ -1,0 +1,239 @@
+@startuml
+
+class AlertDialog {
+    - context: Context
+    - tag: String
+
+    + showAlert(title: String, message: String): void
+    + showAlertOptions(title: String, message: String,
+    positiveText: String, positiveAction: () -> Unit,
+    negativeText: String, negativeAction: () -> Unit)
+}
+
+class AppViewModel {
+    - context: Context
+    - badgesModel: BadgesModel
+    - weatherData: Array<String>
+    - weatherDataLive: MutableLiveData<Array<String>>
+    - qrValue: MutableLiveData<String>
+    - homeImage: Uri?
+
+    - innerClass BadgesViewModelFactory: ViewModelProvider.Factory
+
+    + init(): void
+}
+
+class BadgeAdapterHorizontal {
+    - tag: String
+    - appViewModel: AppViewModel
+    - type: String
+    - order: String
+
+    - innerClass BadgeViewHolder: Recycler...
+
+    + init(): void
+    + onCreateViewHolder(parent: ViewGroup,
+    viewType: Int): BadgeViewHolder
+    + getItemCount(): Int
+    + onBindViewHolder(holder: BadgeViewHolder,
+    position: Int): void
+
+}
+
+class BadgesAdapterVertical {
+    - tag: String
+    - appViewModel: AppViewModel
+    - allBadges: List<DataBadge>
+
+    - innerClass BadgeViewHolder: Recycler...
+
+    + init(): void
+    + onCreateViewHolder(parent: ViewGroup,
+    viewType: Int): BadgeViewHolder
+    + getItemCount(): Int
+    + onBindViewHolder(holder: BadgeViewHolder,
+    position: Int): void
+    + applyFilter(filter: String): Unit
+    + setupPopupMenu(context: Context, view: View,
+    collectedBadge: Boolean, userBadge: UserBadge?): void
+    + redraw(): Unit
+    + sort(List<DataBadge>): List<DataBadge>
+}
+
+class BadgesModel {
+    - tag: String
+    - context: Context
+    - trackedBadges: MutableList<DataBadge>
+    - allBadges: MutableMap<String, DataBadge>
+    - userBadges: MutableList<UserBadge>
+
+    + init(): void
+    + getDataBadge(id: String): DataBadge
+    + getAllBadges(): List<DataBadge>
+    + isBadgeCollected(id: String): Boolean
+    + getTracked(): List<DataBadge>
+    + addTrackedBadge(id: String): void
+    + removeTrackedBadge(id: String): void
+    + saveModel(): void
+    + loadModel(): void
+    + toString(): String
+    + observe(badgesObserver:
+    Observer<BadgesModel>): void
+    + sortUserBadges(): void
+}
+
+class CameraFragment {
+    - tag: String
+    - cameraExecutor: ExecutorService
+    - barcodeScanner: BarcodeScanner
+    - appViewModel: AppViewModel
+
+    + init(): void
+    + onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View?
+    + onViewCreated(view: View,
+    savedInstanceState: Bundle?): void
+    + startCamera(): Unit
+    +analyseForQRCode(image: ImageProxy): Unit
+    + onDestroy(): Unit
+
+}
+
+class DataBadge {
+    - id: String
+    - verification: String
+    - name: String
+    - localLocation: String
+    - countryLocation: String
+    - countryFlag: String
+
+    + init(): void
+    + setFields(name: String, location: String,
+    country: String)
+    + equals(other: Any?): Boolean
+    + hashCode(): Int
+    + getCountryFlag(String): String
+}
+
+class HomeFragment {
+    - tag: String
+    - appViewModel: AppViewModel
+    - pickMedia: ActivityResultLauncher
+    .. (other attributes) ..
+
+    + onCreate(savedInstanceState: Bundle): void
+    + onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View?
+    + updateImage(view: View, uri: Uri?): void
+}
+
+class MainActivity {
+    - appViewModel: AppViewModel
+    .. (other attributes) ..
+
+    + onCreate(savedInstanceState: Bundle?): Unit
+    + onDestroy(): Unit
+
+}
+
+class ScanFragment {
+    - appViewModel: AppViewModel
+    - tag: String
+
+    + badgeScanned(): Unit
+    + onCreate(savedInstanceState: Bundle?): Unit
+    + onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View?
+    + isQRValid(qr: String): Boolean
+}
+
+class URLRequestCallback {
+    - tag: String
+    - appViewModel: AppViewModel
+    - weatherData: ArrayList<String>
+
+    + init(): void
+    + onRedirectReceived(
+        request URLRequest?,
+        info URLResponseInfo?
+        redirect String?): Unit
+    ): Boolean
+    + onResponseStarted(
+        request URLRequest?,
+        info URLResponseInfo?): Unit
+    + onReadCompleted(
+        request URLRequest?,
+        info URLResponseInfo?
+        bytes ByteBuffer?): Unit
+    + onSucceeded(
+        request URLRequest?,
+        info URLResponseInfo?): Unit
+    + onFailed(
+        request URLRequest?,
+        info URLResponseInfo?
+        exception CronetException?): Unit
+
+}
+
+class UserBadge {
+    - dateCollected: Calendar?
+    - tag: String
+    - dataID: String
+    - name: String
+    - localLocation: String
+    - country: String
+
+    + init(): void
+    + toString(): String
+    +getDisplayDate(): String
+    +compareTo(UserBadge): Int
+    +share(Context, String...): Unit
+
+}
+
+class WalletFragment {
+    - tag: String
+    - appViewModel: AppViewModel
+
+    + onCreate(savedInstanceState: Bundle?): Unit
+    + onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View?
+}
+
+AppViewModel ..> BadgesModel: <<uses>>
+BadgeAdapterHorizontal ..> AppViewModel: <<uses>>
+BadgesAdapterVertical ..> AppViewModel: <<uses>>
+BadgesAdapterVertical ..> AlertDialog: <<uses>>
+BadgesModel ..> DataBadge: <<uses>>
+BadgesModel ..> UserBadge: <<uses>>
+CameraFragment ..> AppViewModel: <<uses>>
+HomeFragment ..> AlertDialog: <<uses>>
+HomeFragment ..> AppViewModel: <<uses>>
+HomeFragment ..> BadgeAdapterHorizontal: <<uses>>
+HomeFragment ..> URLRequestCallback: <<uses>>
+MainActivity ..> HomeFragment: <<uses>>
+MainActivity ..> ScanFragment: <<uses>>
+MainActivity ..> WalletFragment: <<uses>>
+MainActivity ..> AppViewModel: <<uses>>
+ScanFragment ..> AppViewModel: <<uses>>
+ScanFragment ..> CameraFragment: <<uses>>
+ScanFragment ..> AlertDialog: <<uses>>
+URLRequestCallback ..> AppViewModel: <<uses>>
+UserBadge ..> DataBadge: <<uses>>
+WalletFragment ..> AppViewModel: <<uses>>
+WalletFragment ..> BadgesAdapterVertical: <<uses>>
+
+
+@enduml

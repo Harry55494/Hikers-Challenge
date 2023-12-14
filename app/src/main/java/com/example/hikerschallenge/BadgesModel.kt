@@ -13,7 +13,7 @@ import java.io.Serializable
 class BadgesModel(private val context: Context): Serializable {
 
     private val tag = "BadgesModel"
-    private val wantToCollect = mutableListOf<DataBadge>()
+    private val trackedBadges = mutableListOf<DataBadge>()
     private val allBadges = mutableMapOf<String, DataBadge>()
     var userBadges = mutableListOf<UserBadge>()
 
@@ -59,20 +59,20 @@ class BadgesModel(private val context: Context): Serializable {
         return userBadges.any { it.dataID == id}
     }
 
-    fun getWantToCollect(): List<DataBadge> {
-        return wantToCollect
+    fun getTracked(): List<DataBadge> {
+        return trackedBadges
     }
 
-    fun addWantToCollect(id: String) {
+    fun addTrackedBadge(id: String) {
         val badge = getDataBadge(id)
-        wantToCollect.add(badge)
+        trackedBadges.add(badge)
         saveModel()
     }
 
-    fun removeWantToCollect(id: String) {
-        for (badge in wantToCollect) {
+    fun removeTrackedBadge(id: String) {
+        for (badge in trackedBadges) {
             if (badge.id == id) {
-                wantToCollect.remove(badge)
+                trackedBadges.remove(badge)
                 Log.i(tag, "'$badge' badge removed from wantToCollect")
                 break
             }
@@ -88,7 +88,7 @@ class BadgesModel(private val context: Context): Serializable {
         }
         val newBadge = UserBadge(dataBadge, dateCollected)
 
-        removeWantToCollect(id)
+        removeTrackedBadge(id)
 
         userBadges.add(newBadge)
         Log.i(tag, "'$newBadge' badge added")
@@ -114,7 +114,7 @@ class BadgesModel(private val context: Context): Serializable {
         editor.putString("badgesJSON", badgesJSON)
 
         val wantToCollectIDs = mutableListOf<String>()
-        for (badge in wantToCollect){
+        for (badge in trackedBadges){
             wantToCollectIDs.add(badge.id)
         }
         val wantToCollectJSON = Gson().toJson(wantToCollectIDs)
@@ -144,7 +144,7 @@ class BadgesModel(private val context: Context): Serializable {
         val wantToCollectJson = sharedPreferences.getString("wantToCollectJSON", null)
         if (wantToCollectJson != null) {
             for (id in Gson().fromJson(wantToCollectJson, Array<String>::class.java)){
-                wantToCollect.add(getDataBadge(id))
+                trackedBadges.add(getDataBadge(id))
             }
         }
 

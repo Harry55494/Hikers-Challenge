@@ -1,7 +1,6 @@
 package com.example.hikerschallenge
 
 import android.content.Context
-import android.media.Image
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +27,6 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
     override fun onBindViewHolder(holder: BadgeViewHolder, position: Int) {
         val badge = allBadges[position]
         holder.bind(badge)
-        Log.i(tag, "onBindViewHolder()2 run")
     }
 
     fun applyFilter(filter: String){
@@ -44,7 +42,7 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
 
         fun bind(badgeToDisplay: DataBadge) {
 
-            val inTracked = appViewModel.badgesModel!!.getWantToCollect().any { it.id == badgeToDisplay.id }
+            val inTracked = appViewModel.badgesModel!!.getTracked().any { it.id == badgeToDisplay.id }
 
             val badgeID = badgeToDisplay.id
             val displayName = badgeToDisplay.name
@@ -76,7 +74,7 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
                     var found = false
                     var foundbadgeID: String = null.toString()
 
-                    for (badge in appViewModel.badgesModel?.getWantToCollect()!!){
+                    for (badge in appViewModel.badgesModel?.getTracked()!!){
                         Log.i(tag, "Checking badge ${badge.id} against $badgeID")
                         if (badge.id == badgeID){
                             found = true
@@ -90,7 +88,7 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
                         // ask to remove badge from want to collect
                         val badgeName = appViewModel.badgesModel!!.getDataBadge(foundbadgeID).name
                         alertDialog.showAlertOptions("Untrack $badgeName badge?", "Are you sure you want to untrack the badge '$badgeName'?", "Yes",{
-                            appViewModel.badgesModel?.removeWantToCollect(foundbadgeID)
+                            appViewModel.badgesModel?.removeTrackedBadge(foundbadgeID)
                             redraw()
                         }, "Cancel", {
                             Log.i(tag, "Badge removal cancelled")
@@ -100,11 +98,11 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
                         val badgeName = appViewModel.badgesModel!!.getDataBadge(badgeID).name
                         Log.i(tag, "User wants to track badge $badgeName")
 
-                        if (appViewModel.badgesModel!!.getWantToCollect().size >= 5){
+                        if (appViewModel.badgesModel!!.getTracked().size >= 5){
                             val alertDialog = AlertDialog(context = itemView.context)
                             alertDialog.showAlert("Too many badges!", "You can only track up to 5 badges at a time. Please untrack a badge before adding another.")
                         } else {
-                            appViewModel.badgesModel?.addWantToCollect(badgeID)
+                            appViewModel.badgesModel?.addTrackedBadge(badgeID)
                         }
 
                         val alertDialog = AlertDialog(context = itemView.context)
@@ -123,10 +121,10 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
         }
     }
 
-    fun setupPopupMenu(context: Context, view: View, collectedBage: Boolean, userBadge: UserBadge?, badgeID: String? = null){
+    fun setupPopupMenu(context: Context, view: View, collectedBadge: Boolean, userBadge: UserBadge?){
         val popupMenu = PopupMenu(context, view)
 
-        if (collectedBage){
+        if (collectedBadge){
 
             popupMenu.menuInflater.inflate(R.menu.collected_badge_row_menu, popupMenu.menu)
 
@@ -166,6 +164,10 @@ class BadgesAdapterVertical(private val appViewModel: AppViewModel) : RecyclerVi
 
     fun redraw(){
         notifyDataSetChanged()
+    }
+
+    fun sort(badgesList : List<DataBadge>): List<DataBadge> {
+        return badgesList.sortedBy { it.name }
     }
 
 }

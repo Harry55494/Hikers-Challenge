@@ -8,13 +8,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class BadgesAdapterHorizontal(appViewModel: AppViewModel, val type: String) : RecyclerView.Adapter<BadgesAdapterHorizontal.BadgeViewHolder>() {
+class BadgesAdapterHorizontal(appViewModel: AppViewModel, val type: String, order: String) : RecyclerView.Adapter<BadgesAdapterHorizontal.BadgeViewHolder>() {
 
-    private val badgesList = when (type) {
+    private var badgesList = when (type) {
         "all" -> appViewModel.badgesModel!!.getAllBadges()
         "user" -> appViewModel.badgesModel!!.userBadges
-        "wanted" -> appViewModel.badgesModel!!.getWantToCollect()
+        "wanted" -> appViewModel.badgesModel!!.getTracked()
         else -> appViewModel.badgesModel!!.getAllBadges()
+    }
+
+    init {
+        if (order == "reverse") {
+            badgesList = badgesList.reversed()
+        }
     }
 
     private val tag = "BadgesAdapter"

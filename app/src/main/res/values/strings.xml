@@ -17,4 +17,6 @@
     <string name="badge_menu_share">Share</string>
     <string name="badge_menu_delete">Delete</string>
     <string name="badge_menu_want_to_get">Track Badge</string>
+    <string name="edit_button_for_home_image_view">Edit button for Home image view</string>
+    <string name="please_enable_camera">Please enable Camera</string>
 </resources>

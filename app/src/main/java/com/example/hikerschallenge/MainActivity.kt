@@ -1,9 +1,10 @@
 package com.example.hikerschallenge
 
+import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -14,13 +15,14 @@ class MainActivity : AppCompatActivity() {
 
     private var tag = "MainActivity"
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         Log.i(tag, "onCreate() run")
 
         val badgesModel = BadgesModel(this)
-        val viewModelFactory = BadgesViewModelFactory(badgesModel, this)
-        val appViewModel = ViewModelProvider(this, viewModelFactory).get(AppViewModel::class.java)
+        val viewModelFactory = BadgesViewModelFactory(this)
+        ViewModelProvider(this, viewModelFactory).get(AppViewModel::class.java)
 
         val activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -31,7 +33,8 @@ class MainActivity : AppCompatActivity() {
 
         activityResultLauncher.launch(arrayOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.CAMERA))
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.READ_MEDIA_IMAGES))
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,11 +44,6 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         Log.i(tag, "Main Activity Loaded")
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        Log.i(tag, "onCreate Running")
     }
 
     override fun onDestroy() {

@@ -39,6 +39,7 @@
         android:id="@+id/addBadgeButton"
         android:layout_alignParentBottom="true"
         android:visibility="visible"
+        android:backgroundTint="@color/deeper_forest_green"
         />
 
     <androidx.cardview.widget.CardView
