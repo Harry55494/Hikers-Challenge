@@ -2,7 +2,6 @@ package com.example.hikerschallenge
 
 import android.app.AlertDialog
 import android.content.Context
-import android.util.Log
 
 class AlertDialog(private val context: Context) {
     // Alert Dialog, custom class to show alerts
@@ -26,11 +25,11 @@ class AlertDialog(private val context: Context) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle(title)
         builder.setMessage(message)
-        builder.setPositiveButton(positiveText){dialog, which ->
+        builder.setPositiveButton(positiveText){ dialog, _ ->
             positiveAction()
             dialog.dismiss()
         }
-        builder.setNegativeButton(negativeText){dialog, which ->
+        builder.setNegativeButton(negativeText){ dialog, _ ->
             negativeAction()
             dialog.dismiss()
         }

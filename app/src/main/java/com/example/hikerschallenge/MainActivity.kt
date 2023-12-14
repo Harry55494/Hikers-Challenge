@@ -1,10 +1,8 @@
 package com.example.hikerschallenge
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -13,17 +11,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
+    // MAKE SURE YOU ADD SOME QR CODES TO THE CAMERA VIEW IN THE EMULATOR
+
     private var tag = "MainActivity"
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    // On create
     override fun onCreate(savedInstanceState: Bundle?) {
 
         Log.i(tag, "onCreate() run")
 
-        val badgesModel = BadgesModel(this)
+        // Create the view model for the badges
+        BadgesModel(this)
         val viewModelFactory = BadgesViewModelFactory(this)
         ViewModelProvider(this, viewModelFactory).get(AppViewModel::class.java)
 
+        // Request permissions for the app at runtime
         val activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             permissions.entries.forEach {
@@ -36,9 +38,11 @@ class MainActivity : AppCompatActivity() {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.READ_MEDIA_IMAGES))
 
+        // Create the activity
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Setup the navigation bar at the bottom
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
         val navController = findNavController(R.id.nav_fragment)
         bottomNavigationView.setupWithNavController(navController)

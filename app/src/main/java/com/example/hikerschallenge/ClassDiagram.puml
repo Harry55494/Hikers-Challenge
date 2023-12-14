@@ -1,4 +1,10 @@
+UML CLASS DIAGRAM
+Requires PlantUML (https://plantuml.com/)
+Delete if it's causing problems
+
 @startuml
+
+
 
 class AlertDialog {
     - context: Context

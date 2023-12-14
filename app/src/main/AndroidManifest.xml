@@ -16,7 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HikersChallenge"
-        tools:targetApi="33"
         android:screenOrientation="portrait"
         android:usesCleartextTraffic="true">
         <activity

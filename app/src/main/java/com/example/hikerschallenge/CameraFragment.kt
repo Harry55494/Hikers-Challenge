@@ -22,14 +22,18 @@ import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class CameraFragment() : Fragment() {
 
+class CameraFragment : Fragment() {
+    // Camera fragment for QR code scanning
+
+    // Variables for camera
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var barcodeScanner: BarcodeScanner
     private val tag = "CameraFragment"
     private val appViewModel by activityViewModels<AppViewModel>()
     private var threadRunning = false
 
+    // On create
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,6 +42,7 @@ class CameraFragment() : Fragment() {
         return inflater.inflate(R.layout.fragment_camera, container, false)
     }
 
+    // Setup camera execuctor and barcode scanner
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -48,9 +53,12 @@ class CameraFragment() : Fragment() {
 
     }
 
+    // Start camera
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
+        // Add listener to camera provider
+        // Gets camera provider and binds camera to lifecycle
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
@@ -63,8 +71,10 @@ class CameraFragment() : Fragment() {
                 }
             }
 
+            // Select back camera
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
+            // Analyse image for QR code
             val imageAnalysis = ImageAnalysis.Builder()
                 .build()
                 .also {
@@ -73,6 +83,7 @@ class CameraFragment() : Fragment() {
                     }
                 }
 
+            // Bind camera to lifecycle
             try {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
@@ -85,11 +96,14 @@ class CameraFragment() : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    // Analyse image for QR code
     @OptIn(ExperimentalGetImage::class) private fun analyseForQRCode(image: ImageProxy) {
         val inputImage = InputImage.fromMediaImage(image.image!!, image.imageInfo.rotationDegrees)
 
+        // Process image for QR code
         barcodeScanner.process(inputImage)
             .addOnSuccessListener { barcodes ->
+                // If QR code found, set value in view model
                 for (barcode in barcodes) {
                     val value = barcode.displayValue
                     if (value != null) {
@@ -99,9 +113,11 @@ class CameraFragment() : Fragment() {
                     Log.i(tag, "QR Code Value: $l")
                 }
             }
+            // If error, log it
             .addOnFailureListener { e ->
                 Log.i(tag, "Error scanning QR code", e)
             }
+            // When comp[lete, close image
             .addOnCompleteListener { barcodes ->
                 image.close()
                 // pause the camera
@@ -112,6 +128,9 @@ class CameraFragment() : Fragment() {
                     cameraProvider.unbindAll()
                 }, ContextCompat.getMainExecutor(requireContext()))
                 Log.i(tag, "Camera paused")*/
+
+                // If there are no more barcodes, set the value to "" after 1 second
+                // This hides the 'add badge' button
                 if (barcodes.result.isEmpty()){
                     // set timeout on another thread coroutine to set the value to "" after 1 second
                     if (!threadRunning){
@@ -131,6 +150,7 @@ class CameraFragment() : Fragment() {
             }
     }
 
+    // Kill camera executor on destroy
     override fun onDestroy() {
         cameraExecutor.shutdown()
         appViewModel.qrvalue.postValue("")

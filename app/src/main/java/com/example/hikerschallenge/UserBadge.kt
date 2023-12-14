@@ -5,8 +5,11 @@ import android.content.Intent
 import android.util.Log
 import java.util.Calendar
 
-class UserBadge(db: DataBadge, var dateCollected: Calendar? = null): Comparable<UserBadge>  {
+class UserBadge(db: DataBadge, private var dateCollected: Calendar? = null): Comparable<UserBadge>  {
+    // UserBadge, holds the extra data for a badge in the user's wallet
 
+    // Variables for holding the data
+    // Mostly assigned from the DataBadge passed in
     private val tag: String = "UserBadge"
     var dataID: String = db.id
     var name: String = db.name
@@ -22,6 +25,8 @@ class UserBadge(db: DataBadge, var dateCollected: Calendar? = null): Comparable<
         return "Badge(name='$name', dataID='$dataID', location='$localLocation', dateCollected=${getDisplayDate(true, true)})"
     }
 
+    // Display date function, for displaying the date at various points in the app
+    // Has different options for displaying the time
     fun getDisplayDate(includeTime: Boolean = false, fullTime: Boolean = false): String {
         return if (dateCollected == null){
             "Unknown"
@@ -66,6 +71,7 @@ class UserBadge(db: DataBadge, var dateCollected: Calendar? = null): Comparable<
         }
     }
 
+    // Share intent
     fun share(context: Context, message: String? = "I've just climbed ${name} and collected the badge in the Hiker's Challenge app!") {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND

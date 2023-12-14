@@ -28,8 +28,13 @@ import org.chromium.net.CronetEngine
 import java.util.concurrent.Executors
 
 class HomeFragment : Fragment() {
+    // Home fragment, used for the home screen
+
+    // Variables for the fragment
     private val tag = "HomeFragment"
+    // Get the view model
     private val appViewModel by activityViewModels<AppViewModel>()
+    // Register for activity result
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             Log.i("PhotoPicker", "Selected URI: $uri")
@@ -39,12 +44,13 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // On create
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         Log.i(tag, "onCreate() run")
     }
 
+    // On create view
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,6 +58,7 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        // Check for permissions
         if (ActivityCompat.checkSelfPermission(requireActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
@@ -64,6 +71,7 @@ class HomeFragment : Fragment() {
         ) {
             Log.i(tag, "Location permission not granted")
         } else {
+            // Log the state of the permissions
             for (permission in arrayOf(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -80,32 +88,40 @@ class HomeFragment : Fragment() {
                 }
             }
 
+            // Make location request if permissions are granted
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
             val mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(1 * 1000)
                 .setFastestInterval(5 * 1000)
 
+            // Request location updates
             fusedLocationClient.requestLocationUpdates(mLocationRequest, object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
+                    // Check if location is found
                     val locationList = locationResult.locations
                     if (locationList.isNotEmpty()) {
+                        // Get the location
                         val location = locationList.last()
+                        // Log the location
                         Log.i(tag, "Location found")
                         Log.i(tag, "Location: ${location.latitude}, ${location.longitude}")
 
+                        // Build a cronet request to get the weather data
                         val myBuilder = CronetEngine.Builder(requireActivity())
                         val cronetEngine = myBuilder.build()
                         val executor = Executors.newSingleThreadExecutor()
                         val requestCallback = URLRequestCallback(appViewModel)
 
+                        // Build the request
                         val requestBuilder = cronetEngine.newUrlRequestBuilder(
                             // Please don't steal my API key, I am but a lowly student :)
                             "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=732af6bb744b0c60aa2041cd423fbe50&units=metric",
                             requestCallback,
                             executor
                         )
+                        // Send off the request
+                        // It will get the weather data and add it to the view model on its own
                         val request = requestBuilder.build()
                         request.start()
                     }
@@ -114,17 +130,24 @@ class HomeFragment : Fragment() {
 
         }
 
+        // Create observer for the weather data
         val weatherObserver = androidx.lifecycle.Observer<Array<String>> { weatherData ->
             val weatherText = view.findViewById<android.widget.TextView>(R.id.weatherTextView)
+            // If the data is not blank, set the text to the data
             if (!weatherData.contentEquals(arrayOf("", ""))){
                 "${weatherData[0]}°C ${weatherData[1]}".also { weatherText.text = it }
             } else {
+                // Otherwise, set it to "" to hide it
                 "".also { weatherText.text = it }
             }
             Log.i(tag, "weatherObserver triggered")
         }
+        // Add the observer to the view model
         appViewModel.weatherDataLive.observe(viewLifecycleOwner, weatherObserver)
 
+
+        // Setup the recycler views for the badges
+        // First is the recently claimed badges
         val badgesRecyclerView = view.findViewById<RecyclerView>(R.id.recently_collected_scroller)
         badgesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
@@ -133,9 +156,9 @@ class HomeFragment : Fragment() {
                 badgesRecyclerView.adapter = BadgesAdapterHorizontal(appViewModel, "user", "reverse")
             }
         }
-
         appViewModel.badgesModel?.observe(badgesObserver)
 
+        // Second is the badges the user has tracked
         val badgesRecyclerView2 = view.findViewById<RecyclerView>(R.id.want_to_collect_scroller)
         badgesRecyclerView2.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
@@ -147,7 +170,7 @@ class HomeFragment : Fragment() {
 
         appViewModel.badgesModel?.observe(badgesObserver2)
 
-
+        // Setup the photo picker
         val photoCard = view.findViewById<androidx.cardview.widget.CardView>(R.id.cardview)
         photoCard.setOnLongClickListener { view ->
 
@@ -163,6 +186,8 @@ class HomeFragment : Fragment() {
 
             true }
 
+        // Load the image from shared preferences
+        // Doesnt currently work due to permissions issues :(
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val homeImage = sharedPreferences.getString("homeImage", null)
         if (homeImage != null){
@@ -173,15 +198,19 @@ class HomeFragment : Fragment() {
         return view
     }
 
+    // Function used to update the image
     private fun updateImage(view: View, uri: Uri? = null){
+        // Get the image view
         val photoCard = view.findViewById<androidx.cardview.widget.CardView>(R.id.cardview)
         val imageView = photoCard.findViewById<ImageView>(R.id.imageView)
         Log.i("PhotoPicker", "Updating image to $uri")
 
+        // If the uri is null, set the image to the default
         if (uri == null){
             val image = ResourcesCompat.getDrawable(resources, R.drawable.template_home_image, null)
             imageView.setImageDrawable(image)
             imageView.postInvalidate()
+        // Otherwise, set the image to the uri
         } else {
             val uri2 = Uri.parse(uri.toString())
             try {
@@ -196,6 +225,8 @@ class HomeFragment : Fragment() {
             }
         }
 
+        // Save the uri to shared preferences after setting the image
+        // This bit does technically work, its just the loading that doesnt...
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = sharedPreferences.edit()
         editor.putString("homeImage", uri.toString())

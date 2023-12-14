@@ -8,6 +8,8 @@ import java.nio.ByteBuffer
 
 
 class URLRequestCallback(private val viewModel: AppViewModel) : UrlRequest.Callback() {
+    // URLRequestCallback, used for getting weather data from the OpenWeather API
+    // Some functions are not used, but are required for the UrlRequest.Callback() class
 
     private val tag = "URLRequestCallback"
     private var weatherData = ArrayList<String>()
@@ -28,6 +30,7 @@ class URLRequestCallback(private val viewModel: AppViewModel) : UrlRequest.Callb
         request!!.read(buffer)
     }
 
+    // This function is called when the response body is read
     override fun onReadCompleted(
         request: UrlRequest?,
         info: UrlResponseInfo?,
@@ -38,17 +41,22 @@ class URLRequestCallback(private val viewModel: AppViewModel) : UrlRequest.Callb
         var StringResponse = String(byteBuffer!!.array())
         StringResponse = StringResponse.replace("?","")
         Log.i(tag, StringResponse)
+        // get the temperature and conditions from the response
         val temperature = StringResponse.substringAfter("temp\":").substringBefore(",")
         val conditions = StringResponse.substringAfter("main\":\"").substringBefore("\"")
+        // save the data to the temporary array
         weatherData = arrayListOf(temperature, conditions)
         Log.i(tag, temperature)
         Log.i(tag, conditions)
         Log.i(tag, "onReadCompleted() run")
     }
 
+    // This function is called when the request is finished
+    // Saves the data to the view model
     override fun onSucceeded(request: UrlRequest?, info: UrlResponseInfo?) {
         Log.i(tag, info.toString())
         val roundedDegrees = weatherData[0].toDouble().toInt()
+        // Get the emoji for the weather conditions
         val dataEmoji = when (weatherData[1]) {
             "Clouds" -> "\uD83C\uDF24"
             "Clear" -> "\uD83C\uDF1E"
