@@ -95,7 +95,6 @@ class ScanFragment : Fragment() {
         transaction.add(R.id.camera_fragment_container, cameraFragment)
         transaction.commit()
 
-
         // create listener to show add badge button when QR code is scanned
         appViewModel.qrvalue.observe(viewLifecycleOwner) { newValue ->
             Log.i(tag, "Making button visible")

@@ -164,10 +164,9 @@ class HomeFragment : Fragment() {
 
         val badgesObserver2 = androidx.lifecycle.Observer<BadgesModel> { badgesModel ->
             badgesModel.let {
-                badgesRecyclerView2.adapter = BadgesAdapterHorizontal(appViewModel, "wanted", "normal")
+                badgesRecyclerView2.adapter = BadgesAdapterHorizontal(appViewModel, "tracked", "normal")
             }
         }
-
         appViewModel.badgesModel?.observe(badgesObserver2)
 
         // Setup the photo picker

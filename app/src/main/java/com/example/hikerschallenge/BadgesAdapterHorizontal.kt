@@ -17,7 +17,7 @@ class BadgesAdapterHorizontal(appViewModel: AppViewModel, val type: String, orde
     private var badgesList = when (type) {
         "all" -> appViewModel.badgesModel!!.getAllBadges()
         "user" -> appViewModel.badgesModel!!.userBadges
-        "wanted" -> appViewModel.badgesModel!!.getTracked()
+        "tracked" -> appViewModel.badgesModel!!.getTracked()
         else -> appViewModel.badgesModel!!.getAllBadges()
     }
 
