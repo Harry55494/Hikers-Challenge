@@ -1,4 +1,4 @@
-package com.example.hikerschallenge
+package com.phillingham.hikerschallenge
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -54,7 +54,7 @@ class BadgesAdapterHorizontal(appViewModel: AppViewModel, val type: String, orde
         private val badgeImage: ImageView = itemView.findViewById(R.id.badge_scroller_image)
 
         fun bind(userBadge: Any) {
-            if (type == "wanted") {
+            if (type == "tracked") {
                 badgeNameTextView.text = (userBadge as DataBadge).name
                 badgeSecondaryText.text = userBadge.localLocation
                 badgeImage.setImageResource(R.drawable.share_location)

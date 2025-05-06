@@ -1,4 +1,4 @@
-package com.example.hikerschallenge
+package com.phillingham.hikerschallenge
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri

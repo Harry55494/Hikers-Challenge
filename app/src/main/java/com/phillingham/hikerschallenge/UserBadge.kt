@@ -1,4 +1,4 @@
-package com.example.hikerschallenge
+package com.phillingham.hikerschallenge
 
 import android.content.Context
 import android.content.Intent

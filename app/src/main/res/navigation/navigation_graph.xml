@@ -7,18 +7,18 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.hikerschallenge.HomeFragment"
+        android:name="com.phillingham.hikerschallenge.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
     </fragment>
     <fragment
         android:id="@+id/addFragment"
-        android:name="com.example.hikerschallenge.ScanFragment"
+        android:name="com.phillingham.hikerschallenge.ScanFragment"
         android:label="fragment_add"
         tools:layout="@layout/fragment_scan" />
     <fragment
         android:id="@+id/walletFragment"
-        android:name="com.example.hikerschallenge.WalletFragment"
+        android:name="com.phillingham.hikerschallenge.WalletFragment"
         android:label="fragment_wallet"
         tools:layout="@layout/fragment_wallet" />
 </navigation>

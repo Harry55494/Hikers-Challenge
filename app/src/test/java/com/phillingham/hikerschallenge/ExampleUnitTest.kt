@@ -1,4 +1,4 @@
-package com.example.hikerschallenge
+package com.phillingham.hikerschallenge
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

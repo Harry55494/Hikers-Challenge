@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.hikerschallenge"
+    namespace = "com.phillingham.hikerschallenge"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.hikerschallenge"
+        applicationId = "com.phillingham.hikerschallenge"
         minSdk = 33
         targetSdk = 34
         versionCode = 1
@@ -33,6 +33,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildToolsVersion = "36.0.0"
 }
 
 dependencies {
