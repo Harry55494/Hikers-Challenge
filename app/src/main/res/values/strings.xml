@@ -19,4 +19,5 @@
     <string name="badge_menu_want_to_get">Track Badge</string>
     <string name="edit_button_for_home_image_view">Edit button for Home image view</string>
     <string name="please_enable_camera">Please enable Camera</string>
+    <string name="top_left_icon">Icon for Hikers Challenge</string>
 </resources>

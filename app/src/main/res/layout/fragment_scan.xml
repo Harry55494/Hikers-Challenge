@@ -7,8 +7,18 @@
     tools:context=".ScanFragment"
     android:layout_margin="0dp">
 
+    <ImageView
+        android:id="@+id/icon_top_left"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/top_left_icon"
+        android:layout_toEndOf="@+id/titleTextView"
+        android:scaleType="centerCrop"
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/ic_launcher" />
+
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:paddingTop="15dp"
         android:text="@string/add_fragment_title"

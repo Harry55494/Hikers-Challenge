@@ -113,10 +113,14 @@ class HomeFragment : Fragment() {
                         val executor = Executors.newSingleThreadExecutor()
                         val requestCallback = URLRequestCallback(appViewModel)
 
+                        val api_key = ""
+
                         // Build the request
                         val requestBuilder = cronetEngine.newUrlRequestBuilder(
                             // Please don't steal my API key, I am but a lowly student :)
-                            "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=732af6bb744b0c60aa2041cd423fbe50&units=metric",
+
+                            //Edit: Can't believe I left it in here thinking this project wouldn't go anywhere... at least its been cancelled now, but leaving the code to demo
+                            "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=$api_key&units=metric",
                             requestCallback,
                             executor
                         )

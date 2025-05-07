@@ -7,13 +7,23 @@
     android:background="@color/background_green"
     android:layout_margin="20dp">
 
+    <ImageView
+        android:id="@+id/icon_top_left"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/top_left_icon"
+        android:layout_toEndOf="@+id/titleTextView"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:text="@string/home_fragment_title"
         android:textStyle="bold"
         android:textSize="34sp"
         android:textColor="@color/titles"
+        android:layout_marginStart="5dp"
         android:id="@+id/titleTextView"
         />
 
@@ -29,7 +39,7 @@
         />
 
     <androidx.cardview.widget.CardView
-        android:layout_width="340dp"
+        android:layout_width="match_parent"
         android:layout_height="260dp"
         android:layout_below="@id/titleTextView"
         android:layout_centerHorizontal="true"
@@ -38,12 +48,12 @@
         android:id="@+id/cardview">
 
         <ImageView
+            android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/example_home_image_description"
-            android:src="@drawable/template_home_image"
             android:scaleType="centerCrop"
-            android:id="@+id/imageView"/>
+            android:src="@drawable/template_home_image" />
 
         <ImageView
             android:layout_width="20dp"
